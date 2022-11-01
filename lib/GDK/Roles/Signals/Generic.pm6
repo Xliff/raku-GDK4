@@ -38,6 +38,31 @@ role GDK::Roles::Signals::Generic:ver<4> {
     %!signals-gdk{$signal}[0];
   }
 
+  # GObject, GdkMonitor, gpointer --> void
+  method connect-monitor (
+    $obj,
+    $signal,
+    &handler?
+  ) {
+    my $hid;
+    %!signals-gdk{$signal} //= do {
+      my \ʂ = Supplier.new;
+      $hid = g-connect-monitor($obj, $signal,
+        -> $, $m, $ud {
+          CATCH {
+            default { ʂ.quit($_) }
+          }
+
+          ʂ.emit( [self, $m, $ud] );
+        },
+        Pointer, 0
+      );
+      [ self.create-signal-supply($signal, ʂ), $obj, $hid];
+    };
+    %!signals-gdk{$signal}[0].tap(&handler) with &handler;
+    %!signals-gdk{$signal}[0];
+  }
+
   # GdkDevice, GdkDisplay, gpointer --> gboolean
   method connect-display-rbool (
     $obj,
@@ -120,6 +145,18 @@ sub g-connect-display (
   Pointer $app,
   Str     $name,
           &handler (GObject, GdkDisplay, Pointer),
+  Pointer $data,
+  uint32  $flags
+)
+  returns uint64
+  is native('gobject-2.0')
+  is symbol('g_signal_connect_object')
+{ * }
+
+sub g-connect-monitor (
+  Pointer $app,
+  Str     $name,
+          &handler (GObject, GdkMonitor, Pointer),
   Pointer $data,
   uint32  $flags
 )
