@@ -6,6 +6,8 @@ use GLib::Raw::Traits;
 use GDK::Raw::Types:ver<4>;
 use GDK::Raw::Clipboard:ver<4>;
 
+use GDK::Texture;
+
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
@@ -280,7 +282,7 @@ class GDK::Clipboard:ver<4> {
     propReturnObject(
       $rv,
       $raw,
-      |::('GDK::Texture').getTypePair
+      |GDK::Texture.getTypePair
     );
   }
 
