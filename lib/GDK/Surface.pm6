@@ -6,6 +6,7 @@ use GLib::Raw::Traits;
 use GDK::Raw::Types:ver<4>;
 use GDK::Raw::Surface:ver<4>;
 
+use GDK::Cursor;
 use GDK::Display;
 
 use GLib::Roles::Implementor;
@@ -29,14 +30,14 @@ class GDK::Surface:ver<4> {
 
   # Type: GDKCursor
   method cursor ( :$raw = False ) is rw  is g-property {
-    my $gv = GLib::Value.new( ::('GDK::Cursor').get_type );
+    my $gv = GLib::Value.new( GDK::Cursor.get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('cursor', $gv);
         propReturnObject(
           $gv.object,
           $raw,
-          |::('GDK::Cursor').getTypePair
+          |GDK::Cursor.getTypePair
         );
       },
       STORE => -> $, GdkCursor() $val is copy {
@@ -212,7 +213,7 @@ class GDK::Surface:ver<4> {
     propReturnObject(
       gdk_surface_get_cursor($!gdk-s),
       $raw,
-      |::('GDK::Cursor').getTypePair
+      |GDK::Cursor.getTypePair
     );
   }
 
@@ -220,7 +221,7 @@ class GDK::Surface:ver<4> {
     propReturnObject(
       gdk_surface_get_device_cursor($!gdk-s, $device),
       $raw,
-      |::('GDK::Cursor').getTypePair
+      |GDK::Cursor.getTypePair
     );
   }
 
