@@ -7,6 +7,7 @@ our @gdk4-exports is export;
 BEGIN {
   @gdk4-exports = <
     Cairo
+    GDK::Raw::Compat
     GDK::Raw::Definitions
     GDK::Raw::Enums
     GDK::Raw::Structs

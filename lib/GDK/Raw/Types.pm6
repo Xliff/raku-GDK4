@@ -28,6 +28,7 @@ need GIO::Raw::Quarks;
 need GIO::Raw::Structs;
 need GIO::Raw::Subs;
 need GIO::Raw::Exports;
+need GDK::Raw::Compat:ver<4>;
 need GDK::Raw::Definitions:ver<4>;
 need GDK::Raw::Enums:ver<4>;
 need GDK::Raw::Structs:ver<4>;
