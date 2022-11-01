@@ -85,19 +85,17 @@ class GDK::Device:ver<4> {
   }
 
   # Type: GDKInputSource
-  method source ( :$raw = False ) is rw  is g-property {
-    my $gv = GLib::Value.new( ::('GDK::InputSource').get_type );
+  method source ( :$enum = True ) is rw  is g-property {
+    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GdkInputSource) );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('source', $gv);
-        propReturnObject(
-          $gv.object,
-          $raw,
-          |::('GDK::InputSource').getTypePair
-        );
+        my $r = $gv.valueFromEnum( GdkInputSource );
+        $r = GdkInputSourceEnum($r) if $enum;
+        $r
       },
-      STORE => -> $,  $val is copy {
-        $gv.GDKInputSource = $val;
+      STORE => -> $, Int() $val is copy {
+        $gv.valueFromEnum(GdkInputSource) = $val;
         self.prop_set('source', $gv);
       }
     );
@@ -350,12 +348,10 @@ class GDK::Device:ver<4> {
     );
   }
 
-  method get_source ( :$raw = False ) {
-    propReturnObject(
-      gdk_device_get_source($!gdk-d),
-      $raw,
-      |::('GDK::InputSource').getTypePair
-    );
+  method get_source ( :$enum = True ) {
+    my $is = gdk_device_get_source($!gdk-d);
+    return $is unless $enum;
+    GdkInputSourceEnum($is)
   }
 
   proto method get_surface_at_position (|)
