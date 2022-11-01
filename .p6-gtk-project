@@ -4,3 +4,4 @@ backups=backup,bitbucket,google-backup,azure-backupm,hut
 build_exclude=
 lib=gdk4
 include_directory=/usr/src/gtk4-4.8.1+ds/gdk
+exec=p6gtk4exec

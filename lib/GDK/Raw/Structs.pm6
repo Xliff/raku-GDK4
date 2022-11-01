@@ -13,22 +13,22 @@ class GdkContentProvider is repr<CStruct> is export {
 
 class GdkKeymapKey is repr<CStruct> is export {
 	has guint $!keycode;
-	has int   $!group  ;
-	has int   $!level  ;
+	has gint   $!group  ;
+	has gint   $!level  ;
 }
 
 class GdkRGBA is repr<CStruct> is export {
-	has float $!red  ;
-	has float $!green;
-	has float $!blue ;
-	has float $!alpha;
+	has gfloat $!red  ;
+	has gfloat $!green;
+	has gfloat $!blue ;
+	has gfloat $!alpha;
 }
 
 class GdkRectangle is repr<CStruct> is export {
-	has int $!x     ;
-	has int $!y     ;
-	has int $!width ;
-	has int $!height;
+	has gint $!x     ;
+	has gint $!y     ;
+	has gint $!width ;
+	has gint $!height;
 }
 
 class GdkSeat is repr<CStruct> is export {
