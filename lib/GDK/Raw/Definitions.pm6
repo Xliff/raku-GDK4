@@ -21,6 +21,7 @@ class GdkDevice                is repr<CPointer> does GLib::Roles::Pointers is e
 class GdkDeviceTool            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkPixbuf                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkFrameClock            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkFrameTimings          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDisplay               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkGLContext             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkMonitor               is repr<CPointer> does GLib::Roles::Pointers is export { }
