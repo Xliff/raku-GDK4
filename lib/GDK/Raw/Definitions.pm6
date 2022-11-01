@@ -19,6 +19,7 @@ class GdkCairoContext          is repr<CPointer> does GLib::Roles::Pointers is e
 class GdkCursor                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDevice                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDeviceTool            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkPixbuf                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkFrameClock            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDisplay               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkGLContext             is repr<CPointer> does GLib::Roles::Pointers is export { }
