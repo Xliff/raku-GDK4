@@ -1,5 +1,8 @@
 use v6.c;
 
+use NativeCall;
+
+use GLib::Raw::Traits;
 use GDK::Raw::Types:ver<4>;
 use GDK::Raw::Display:ver<4>;
 
@@ -11,14 +14,14 @@ use GDK::Seat:ver<4>;
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
-use GDK::Roles::Signals::Display:ver<4>;
+use GDK::Roles::Signals::Generic:ver<4>;
 
 our subset GdkDisplayAncestry is export of Mu
   where GdkDisplay | GObject;
 
 class GDK::Display:ver<4> {
   also does GLib::Roles::Object;
-  also does GDK::Roles::Signals::Display:ver<4>;
+  also does GDK::Roles::Signals::Generic;
 
   has GdkDisplay $!gdk-d is implementor;
 
@@ -54,8 +57,10 @@ class GDK::Display:ver<4> {
     $o;
   }
 
-  method open {
-    gdk_display_open($!gdk-d);
+  method open (Str() $name) {
+    my $gdk-display = gdk_display_open($name);
+
+    $gdk-display ?? self.bless( :$gdk-display ) !! Nil;
   }
 
   # Type: boolean
@@ -148,13 +153,13 @@ class GDK::Display:ver<4> {
 
   method get_default ( :$raw = False ) {
     propReturnObject(
-      gdk_display_get_default($!gdk-d),
+      gdk_display_get_default(),
       $raw,
       |self.getTypePair
     );
   }
 
-  method get_default_seat ( :raw = False ) {
+  method get_default_seat ( :$raw = False ) {
     propReturnObject(
       gdk_display_get_default_seat($!gdk-d),
       $raw,
@@ -340,7 +345,8 @@ class GDK::Display:ver<4> {
           $keyval          is rw,
           $effective_group is rw,
           $level           is rw,
-          $consumed        is rw
+          $consumed        is rw,
+         :$all                    = False
   ) {
     my guint             $k      = $keycode;
     my GdkModifierType   $s      = $state;
@@ -348,7 +354,7 @@ class GDK::Display:ver<4> {
 
     my guint             $kv     = 0;
     my gint             ($e, $l) = 0 xx 2;
-    my GdkModifierrType  $c      = 0;
+    my GdkModifierType   $c      = 0;
 
     my $rv = gdk_display_translate_key(
       $!gdk-d,

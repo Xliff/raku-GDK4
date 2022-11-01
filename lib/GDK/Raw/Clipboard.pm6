@@ -4,9 +4,11 @@ use NativeCall;
 
 use GLib::Raw::Definitions;
 use GLib::Raw::Enums;
-use GIO::Rw::Definitions;
+use GLib::Raw::Structs;
+use GIO::Raw::Definitions;
 use GDK::Raw::Definitions:ver<4>;
 use GDK::Raw::Enums:ver<4>;
+use GDK::Raw::Structs:ver<4>;
 
 unit package GDK::Raw::Clipboard:ver<4>;
 

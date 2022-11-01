@@ -1,18 +1,23 @@
 use v6.c;
 
+use GLib::Raw::Traits;
 use GDK::Raw::Types:ver<4>;
 use GDK::Raw::Seat:ver<4>;
 
+use GLib::GList;
 use GDK::Device::Tool;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+
+use GDK::Roles::Signals::Generic:ver<4>;
 
 our subset GdkSeatAncestry is export of Mu
   where GdkSeat | GObject;
 
 class GDK::Seat:ver<4> {
   also does GLib::Roles::Object;
+  also does GDK::Roles::Signals::Generic;
 
   has GdkSeat $!gdk-s is implementor;
 
@@ -49,7 +54,7 @@ class GDK::Seat:ver<4> {
   }
 
   # Type: GDKDisplay
-  method display is rw  is g-property {
+  method display ( :$raw = False ) is rw  is g-property {
     my $gv = GLib::Value.new( ::('GDK::Display').get_type );
     Proxy.new(
       FETCH => sub ($) {

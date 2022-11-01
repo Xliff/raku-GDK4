@@ -1,5 +1,6 @@
 use v6.c;
 
+use GLib::Raw::Traits;
 use GDK::Raw::Types:ver<4>;
 use GDK::Raw::Device:ver<4>;
 
@@ -277,11 +278,11 @@ class GDK::Device:ver<4> {
 
   # Type: GDKModifierType
   method modifier-state is rw  is g-property {
-    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GDKModifierType) );
+    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GdkModifierType) );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('modifier-state', $gv);
-        GdkModifierTypeEnum( $gv.valueFromEnum(GDKModifierType) )
+        GdkModifierTypeEnum( $gv.valueFromEnum(GdkModifierType) )
       },
       STORE => -> $,  $val is copy {
         warn 'modifier-state does not allow writing'
@@ -341,7 +342,7 @@ class GDK::Device:ver<4> {
     gdk_device_get_scroll_lock_state($!gdk-d);
   }
 
-  method get_seat {
+  method get_seat ( :$raw = False ) {
     propReturnObject(
       gdk_device_get_seat($!gdk-d),
       $raw,
@@ -360,15 +361,19 @@ class GDK::Device:ver<4> {
   proto method get_surface_at_position (|)
   { * }
 
-  multi method get_surface_at_position (
+  multi method get_surface_at_position {
     samewith($, $);
   }
-  multi method get_surface_at_position ($win_x is rw, $win_y is rw) {
+  multi method get_surface_at_position (
+     $win_x is rw,
+     $win_y is rw,
+    :$raw          = False
+  ) {
     my gdouble ($wx, $wy) = 0e0 xx 2;
 
     my $s = gdk_device_get_surface_at_position($!gdk-d, $wx, $wy);
     ($win_x, $win_y) = ($wx, $wy);
-    $s = propReturnObject($s, $raw, |::('GDK::Surface').getTypePair
+    $s = propReturnObject( $s, $raw, |::('GDK::Surface').getTypePair );
     ($s, $win_x, $win_y);
   }
 

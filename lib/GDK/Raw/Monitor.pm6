@@ -4,6 +4,8 @@ use NativeCall;
 
 use GLib::Raw::Definitions;
 use GDK::Raw::Definitions:ver<4>;
+use GDK::Raw::Enums:ver<4>;
+use GDK::Raw::Structs:ver<4>;
 
 unit package GDK::Raw::Monitor:ver<4>;
 

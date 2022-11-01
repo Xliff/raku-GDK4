@@ -2,6 +2,7 @@ use v6.c;
 
 use NativeCall;
 
+use GLib::Raw::Traits;
 use GDK::Raw::Types:ver<4>;
 use GDK::Raw::Clipboard:ver<4>;
 
@@ -68,12 +69,16 @@ class GDK::Clipboard:ver<4> {
   }
 
   # Type: GDKContentFormats
-  method formats is rw  is g-property {
-    my $gv = GLib::Value.new( GDKContentFormats );
+  method formats ( :$raw = False ) is rw  is g-property {
+    my $gv = GLib::Value.new( ::('GDK::ContentFormats').get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('formats', $gv);
-        $gv.GDKContentFormats;
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |::('GDK::ContentFormats').getTypePair
+        );
       },
       STORE => -> $,  $val is copy {
         warn 'formats does not allow writing'
@@ -96,12 +101,16 @@ class GDK::Clipboard:ver<4> {
   }
 
   # Type: GDKContentProvider
-  method content is rw  is g-property {
-    my $gv = GLib::Value.new( GDKContentProvider );
+  method content ( :$raw = False ) is rw  is g-property {
+    my $gv = GLib::Value.new( ::('GDK::ContentProvider').get_type );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('content', $gv);
-        $gv.GDKContentProvider;
+        propReturnObject(
+          $gv.object,
+          $raw,
+          |::('GDK::ContentProvider').getTypePair
+        )
       },
       STORE => -> $,  $val is copy {
         warn 'content does not allow writing'
@@ -153,7 +162,13 @@ class GDK::Clipboard:ver<4> {
                    )             = G_PRIORITY_DEFAULT,
     GCancellable() :$cancellable = GCancellable
   ) {
-    samewith($mime_types, $io_priority, $cancellable, &callback, $user_data);
+    samewith(
+      ArrayToCArray(Str, @mime_types),
+      $io_priority,
+      $cancellable,
+      &callback,
+      $user_data
+    );
   }
   multi method read_async (
     CArray[Str]         $mime_types,
@@ -184,9 +199,10 @@ class GDK::Clipboard:ver<4> {
     samewith($result, newCArray(Str), $error);
   }
   multi method read_finish (
-    GAsyncResult()          $result,
-    CArray[Str]             $out_mime_type,
-    CArray[Pointer[GError]] $error
+    GAsyncResult()           $result,
+    CArray[Str]              $out_mime_type,
+    CArray[Pointer[GError]]  $error,
+                            :$raw            = False
   ) {
     my $is = propReturnObject(
       gdk_clipboard_read_finish(
@@ -202,6 +218,7 @@ class GDK::Clipboard:ver<4> {
   }
 
   proto method read_text_async (|)
+  { * }
 
   multi method read_text_async (
                     &callback,
@@ -270,7 +287,7 @@ class GDK::Clipboard:ver<4> {
   proto method read_value_async (|)
   { * }
 
-  method read_value_async (
+  multi method read_value_async (
     Int()                $type,
                          &callback,
     gpointer             $user_data,
@@ -283,7 +300,7 @@ class GDK::Clipboard:ver<4> {
   ) {
     samewith($type, $io_priority, $cancellable, &callback, $user_data)
   }
-  method read_value_async (
+  multi method read_value_async (
     Int()               $type,
     Int()               $io_priority,
     GCancellable()      $cancellable,

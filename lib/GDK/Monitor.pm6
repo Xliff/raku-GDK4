@@ -180,7 +180,7 @@ class GDK::Monitor:ver<4> {
 
   # Type: GDKSubpixelLayout
   method subpixel-layout ( :$enum = True ) is rw  is g-property {
-    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GDKSubpixelLayout) );
+    my $gv = GLib::Value.new( GLib::Value.typeFromEnum(GdkSubpixelLayout) );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('subpixel-layout', $gv);
@@ -257,7 +257,7 @@ class GDK::Monitor:ver<4> {
   method get_type {
     state ($n, $t);
 
-    unstable_get_type( self.^name, &gdk_monitor_get_type, $n, $m );
+    unstable_get_type( self.^name, &gdk_monitor_get_type, $n, $t );
   }
 
   method get_width_mm {

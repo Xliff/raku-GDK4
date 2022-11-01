@@ -1,8 +1,12 @@
 use v6.c;
 
+use NativeCall;
+
 use GLib::Raw::Definitions;
-use GDK::Raw::Definitions;
-use GDK::Raw::Enums;
+use GLib::Raw::Structs;
+use GDK::Raw::Definitions:ver<4>;
+use GDK::Raw::Enums:ver<4>;
+use GDK::Raw::Structs:ver<4>;
 
 unit package GDK::Raw::Seat;
 

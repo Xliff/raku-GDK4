@@ -1,9 +1,12 @@
 use v6.c;
 
+use NativeCall;
+
 use GLib::Raw::Definitions;
 use Pango::Raw::Enums;
 use GDK::Raw::Definitions:ver<4>;
 use GDK::Raw::Enums:ver<4>;
+use GDK::Raw::Structs:ver<4>;
 
 unit package GDK::Raw::Device:ver<4>;
 
