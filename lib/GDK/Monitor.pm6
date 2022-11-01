@@ -128,7 +128,7 @@ class GDK::Monitor:ver<4> {
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('geometry', $gv);
-        cast($gv.pointer, GdkRectangle);
+        cast(GdkRectangle, $gv.boxed);
       },
       STORE => -> $,  $val is copy {
         warn 'geometry does not allow writing'
@@ -266,6 +266,17 @@ class GDK::Monitor:ver<4> {
 
   method is_valid {
     so gdk_monitor_is_valid($!gdk-m);
+  }
+
+  method fullInfo {
+    qq:to/INFO/.chomp;
+      Manufacturer: { self.manufacturer }
+      Model:        { self.model }
+      Resolution:   { self.geometry.width } x { self.geometry.height }
+      Refresh Rate: { self.refresh-rate }
+      Scale Factor: { self.scale-factor }
+      Aspect Ratio: { self.width-mm div 100 }:{ self.height-mm div 100 }
+      INFO
   }
 
 }

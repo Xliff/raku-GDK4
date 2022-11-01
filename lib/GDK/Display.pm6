@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use NativeCall;
 
 use GLib::Raw::Traits;
@@ -14,6 +16,8 @@ use GDK::Seat:ver<4>;
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
+use GLib::Roles::TypedArray;
+use GIO::Roles::ListModel;
 use GDK::Roles::Signals::Generic:ver<4>;
 
 our subset GdkDisplayAncestry is export of Mu
@@ -47,6 +51,7 @@ class GDK::Display:ver<4> {
   }
 
   method GDK::Raw::Definitions::GdkDisplay
+    is also<GdkDisplay>
   { $!gdk-d }
 
   multi method new (GdkDisplayAncestry $gdk-display, :$ref = True) {
@@ -92,7 +97,7 @@ class GDK::Display:ver<4> {
   }
 
   # Type: boolean
-  method input-shapes is rw  is g-property {
+  method input-shapes is rw  is g-property is also<input_shapes> {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -124,14 +129,18 @@ class GDK::Display:ver<4> {
   method create_gl_context (
     GdkDisplay()            $self,
     CArray[Pointer[GError]] $error
-  ) {
+  )
+    is also<create-gl-context>
+  {
     gdk_display_create_gl_context($!gdk-d, $error);
   }
 
   method device_is_grabbed (
     GdkDisplay() $display,
     GdkDevice()  $device
-  ) {
+  )
+    is also<device-is-grabbed>
+  {
     so gdk_display_device_is_grabbed($!gdk-d, $device);
   }
 
@@ -139,11 +148,11 @@ class GDK::Display:ver<4> {
     gdk_display_flush($!gdk-d);
   }
 
-  method get_app_launch_context {
+  method get_app_launch_context is also<get-app-launch-context> {
     gdk_display_get_app_launch_context($!gdk-d);
   }
 
-  method get_clipboard ( :$raw = False ) {
+  method get_clipboard ( :$raw = False ) is also<get-clipboard> {
     propReturnObject(
       gdk_display_get_clipboard($!gdk-d),
       $raw,
@@ -151,7 +160,7 @@ class GDK::Display:ver<4> {
     );
   }
 
-  method get_default ( :$raw = False ) {
+  method get_default ( :$raw = False ) is also<get-default> {
     propReturnObject(
       gdk_display_get_default(),
       $raw,
@@ -159,7 +168,7 @@ class GDK::Display:ver<4> {
     );
   }
 
-  method get_default_seat ( :$raw = False ) {
+  method get_default_seat ( :$raw = False ) is also<get-default-seat> {
     propReturnObject(
       gdk_display_get_default_seat($!gdk-d),
       $raw,
@@ -171,7 +180,9 @@ class GDK::Display:ver<4> {
     GdkDisplay()  $display,
     GdkSurface()  $surface,
                  :$raw      = False
-  ) {
+  )
+    is also<get-monitor-at-surface>
+  {
     propReturnObject(
       gdk_display_get_monitor_at_surface($!gdk-d, $surface),
       $raw,
@@ -179,23 +190,25 @@ class GDK::Display:ver<4> {
     );
   }
 
-  method get_monitors ( :$raw = False, :$model = False ) {
+  method get_monitors ( :$raw = False, :$model = False )
+    is also<get-monitors>
+  {
     my $ml = propReturnObject(
       gdk_display_get_monitors($!gdk-d),
       $raw,
       |GIO::ListModel.getTypePair
     );
-    return $ml if $raw && $model;
-    $ml does GLib::Roles::TypedArray[GdkMonitor, $raw, GDK::Monitor];
     return $ml if $model;
-    $ml.Array;
+    $ml.to_array( $raw, |GDK::Monitor.getTypePair )
   }
 
-  method get_name {
+  method get_name is also<get-name> {
     gdk_display_get_name($!gdk-d);
   }
 
-  method get_primary_clipboard ( :$raw = False ) {
+  method get_primary_clipboard ( :$raw = False )
+    is also<get-primary-clipboard>
+  {
     propReturnObject(
       gdk_display_get_primary_clipboard($!gdk-d),
       $raw,
@@ -207,33 +220,35 @@ class GDK::Display:ver<4> {
     GdkDisplay() $display,
     Str()        $name,
     GValue()     $value
-  ) {
+  )
+    is also<get-setting>
+  {
     so gdk_display_get_setting($!gdk-d, $name, $value);
   }
 
-  method get_startup_notification_id {
+  method get_startup_notification_id is also<get-startup-notification-id> {
     gdk_display_get_startup_notification_id($!gdk-d);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gdk_display_get_type, $n, $t );
   }
 
-  method is_closed {
+  method is_closed is also<is-closed> {
     so gdk_display_is_closed($!gdk-d);
   }
 
-  method is_composited {
+  method is_composited is also<is-composited> {
     so gdk_display_is_composited($!gdk-d);
   }
 
-  method is_rgba {
+  method is_rgba is also<is-rgba> {
     so gdk_display_is_rgba($!gdk-d);
   }
 
-  method list_seats ( :$raw = False, :$glist = False ) {
+  method list_seats ( :$raw = False, :$glist = False ) is also<list-seats> {
     returnGList(
       gdk_display_list_seats($!gdk-d),
       $raw,
@@ -243,6 +258,7 @@ class GDK::Display:ver<4> {
   }
 
   proto method map_keycode (|)
+    is also<map-keycode>
   { * }
 
   multi method map_keycode (Int() $keycode) {
@@ -275,6 +291,7 @@ class GDK::Display:ver<4> {
   }
 
   proto method map_keyval (|)
+    is also<map-keyval>
   { * }
 
   multi method map_keyval (Int() $keyval) {
@@ -304,11 +321,15 @@ class GDK::Display:ver<4> {
     $all.not ?? $rv !! ($rv, $keys, $n_keys)
   }
 
-  method notify_startup_complete (Str() $startup_id) {
+  method notify_startup_complete (Str() $startup_id)
+    is also<notify-startup-complete>
+  {
     gdk_display_notify_startup_complete($!gdk-d, $startup_id);
   }
 
-  method prepare_gl (CArray[Pointer[GError]] $error = gerror) {
+  method prepare_gl (CArray[Pointer[GError]] $error = gerror)
+    is also<prepare-gl>
+  {
     clear_error;
     my $rv = gdk_display_prepare_gl($!gdk-d, $error);
     set_error($error);
@@ -318,11 +339,13 @@ class GDK::Display:ver<4> {
   method put_event (
     GdkDisplay() $display,
     GdkEvent()   $event
-  ) {
+  )
+    is also<put-event>
+  {
     gdk_display_put_event($!gdk-d, $event);
   }
 
-  method supports_input_shapes {
+  method supports_input_shapes is also<supports-input-shapes> {
     so gdk_display_supports_input_shapes($!gdk-d);
   }
 
@@ -331,6 +354,7 @@ class GDK::Display:ver<4> {
   }
 
   proto method translate_key (|)
+    is also<translate-key>
   { * }
 
   multi method translate_key (Int() $keycode, Int() $state, Int() $group) {
