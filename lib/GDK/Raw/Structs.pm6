@@ -4,6 +4,7 @@ use NativeCall;
 
 use GLib::Raw::Definitions;
 use GLib::Raw::Object;
+use GDK::Raw::Enums:ver<4>;
 
 unit package GDK::Raw::Structs:ver<4>;
 
@@ -38,4 +39,10 @@ class GdkRectangle is repr<CStruct> is export {
 
 class GdkSeat is repr<CStruct> is export {
 	HAS GObject $.parent;
+}
+
+class GdkTimeCoord is repr<CStruct> is export {
+	has guint        $.time;
+	has GdkAxisFlags $.flags;
+	HAS gdouble      @.gdouble[GDK_AXIS_LAST] is CArray;
 }
