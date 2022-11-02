@@ -11,6 +11,11 @@ class GdkContentProvider is repr<CStruct> is export {
 	HAS GObject $.parent;
 }
 
+class gdk_key is repr<CStruct> is export {
+	has guint $.keyval;
+	has guint $.offset;
+}
+
 class GdkKeymapKey is repr<CStruct> is export {
 	has guint  $.keycode;
 	has gint   $.group  ;
