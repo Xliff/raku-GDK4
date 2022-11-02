@@ -10,6 +10,7 @@ use GDK::Raw::Display:ver<4>;
 
 use GLib::GList;
 use GDK::Clipboard:ver<4>;
+use GDK::LaunchContext:ver<4>;
 use GDK::Monitor:ver<4>;
 use GDK::Seat:ver<4>;
 
@@ -148,8 +149,18 @@ class GDK::Display:ver<4> {
     gdk_display_flush($!gdk-d);
   }
 
-  method get_app_launch_context is also<get-app-launch-context> {
-    gdk_display_get_app_launch_context($!gdk-d);
+  method get_app_launch_context ( :$raw = False )
+    is also<
+      get-app-launch-context
+      get_launch_context
+      get-launch-context
+    >
+  {
+    propReturnObject(
+      gdk_display_get_app_launch_context($!gdk-d),
+      $raw,
+      |GDK::LaunchContext.getTypePair
+    );
   }
 
   method get_clipboard ( :$raw = False ) is also<get-clipboard> {
