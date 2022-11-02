@@ -6,6 +6,8 @@ use GLib::Raw::Traits;
 use GDK::Raw::Types:ver<4>;
 use GDK::Raw::Cursor:ver<4>;
 
+use GDK::Texture;
+
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
