@@ -20,6 +20,8 @@ class GdkCursor                is repr<CPointer> does GLib::Roles::Pointers is e
 class GdkDevice                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDeviceTool            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDisplay               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkDragAction            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkDrag                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDrop                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkEventSequence         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkFrameClock            is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -31,6 +33,19 @@ class GdkSurface               is repr<CPointer> does GLib::Roles::Pointers is e
 class GdkTexture               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkVulkanContext         is repr<CPointer> does GLib::Roles::Pointers is export { }
 
-class GdkEvent                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkContentFormats        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkContentFormatsBuilder is repr<CPointer> does GLib::Roles::Pointers is export { }
+
+class GdkEvent                 is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkButtonEvent           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkCrossingEvent         is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkDeleteEvent           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkFocusEvent            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkGrabBrokenEvent       is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkKeyEvent              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkMotionEvent           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkPadEvent              is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkProximityEvent        is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkScrollEvent           is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkTouchEvent            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkTouchpadEvent         is repr<CPointer> does GLib::Roles::Pointers is export { }
