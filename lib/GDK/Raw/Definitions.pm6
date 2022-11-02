@@ -14,17 +14,19 @@ constant gdk4 is export = 'gtk-4';
 constant cairo_surface_t is export := Cairo::cairo_surface_t;
 
 class GdkAppLaunchContext      is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GdkClipboard             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkCairoContext          is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkClipboard             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkCursor                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDevice                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDeviceTool            is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GdkPixbuf                is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkDisplay               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkDrop                  is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkEventSequence         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkFrameClock            is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkFrameTimings          is repr<CPointer> does GLib::Roles::Pointers is export { }
-class GdkDisplay               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkGLContext             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkMonitor               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkPixbuf                is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkSurface               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkTexture               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkVulkanContext         is repr<CPointer> does GLib::Roles::Pointers is export { }
