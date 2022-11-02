@@ -8,11 +8,27 @@ use GDK::Raw::Events:ver<4>;
 
 use GDK::Device:ver<4>;
 use GDK::Device::Tool:ver<4>;
+use GDK::Drop:ver<4>;
 use GDK::Seat:ver<4>;
 use GDK::Surface:ver<4>;
 
 class GDK::Event:ver<4> {
   has GdkEvent $!gdk-e is implementor;
+
+  submethod BUILD ( :$gdk-event is copy ) {
+    if $gdk-event {
+      $gdk-event = cast(GdkEvent, $gdk-event) unless $gdk-event ~~ GdkEvent;
+      $!gdk-e = $gdk-event
+    }
+  }
+
+  method new (GdkEvent $e) {
+    $e ?? self.bless( gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkEvent
+    is also<GdkEvent>
+  { $!gdk-e }
 
   proto method get_angle (|)
     is also<get-angle>
@@ -30,7 +46,7 @@ class GDK::Event:ver<4> {
   ) {
     my gdouble $a = 0e0;
 
-    my $rv = gdk_events_get_angle($!gdk-e, $event2, $a);
+    my $rv = gdk_events_get_angle(self.GdkEvent, $event2, $a);
     $angle = $a;
     $all.not ?? $rv !! ($rv, $angle)
   }
@@ -52,7 +68,7 @@ class GDK::Event:ver<4> {
   ) {
     my gdouble ($cx, $cy) = 0e0 xx 2;
 
-    my $rv = gdk_events_get_center($!gdk-e, $event2, $cx, $cy);
+    my $rv = gdk_events_get_center(self.GdkEvent, $event2, $cx, $cy);
     ($x, $y) = ($cx, $cy);
     $all.not ?? $rv !! ( $rv, $x, $y);
   }
@@ -73,7 +89,7 @@ class GDK::Event:ver<4> {
   ) {
     my gdouble $d = 0e0;
 
-    my $rv = gdk_events_get_distance($!gdk-e, $event2, $d);
+    my $rv = gdk_events_get_distance(self.GdkEvent, $event2, $d);
     $distance = $d;
     $all.not ?? $rv !! ($rv, $distance);
   }
@@ -95,7 +111,7 @@ class GDK::Event:ver<4> {
   ) {
     my guint $n = 0;
 
-    my $rv = gdk_event_get_axes($!gdk-e, $axes, $n);
+    my $rv = gdk_event_get_axes(self.GdkEvent, $axes, $n);
     $n_axes = $n;
     if $rv {
       $axes = ArrayToCArray($axes, $n_axes) unless $carray;
@@ -114,7 +130,7 @@ class GDK::Event:ver<4> {
     my GdkAxisUse $a = 0;
     my gdouble    $v = 0e0;
 
-    gdk_event_get_axis($!gdk-e, $a, $v);
+    gdk_event_get_axis(self.GdkEvent, $a, $v);
     ($axis_use, $value) = ($a, $v);
   }
 
@@ -125,7 +141,7 @@ class GDK::Event:ver<4> {
     >
   {
     propReturnObject(
-      gdk_event_get_device($!gdk-e),
+      gdk_event_get_device(self.GdkEvent),
       $raw,
       |GDK::Device.getTypePair
     );
@@ -139,7 +155,7 @@ class GDK::Event:ver<4> {
     >
   {
     propReturnObject(
-      gdk_event_get_device_tool($!gdk-e),
+      gdk_event_get_device_tool(self.GdkEvent),
       $raw,
       |GDK::Device::Tool.getTypePair
     );
@@ -152,7 +168,7 @@ class GDK::Event:ver<4> {
     >
   {
     propReturnObject(
-      gdk_event_get_display($!gdk-e),
+      gdk_event_get_display(self.GdkEvent),
       $raw,
       |GDK::Device.getTypePair
     );
@@ -165,17 +181,25 @@ class GDK::Event:ver<4> {
       event-sequence
     >
   {
-    gdk_event_get_event_sequence($!gdk-e);
+    gdk_event_get_event_sequence(self.GdkEvent);
   }
 
-  method get_event_type
+  proto method get_event_type (|)
+    is also<get-event-type>
+  { * }
+
+  multi method get_event_type ( :$enum = True )
     is also<
-      get-event-type
       event_type
       event-type
     >
   {
-    gdk_event_get_event_type($!gdk-e);
+    ::?CLASS.get_event_type($!gdk-e);
+  }
+  multi method get_event_type (GDK::Event:U: GdkEvent $e, :$enum = True) {
+    my $et = gdk_event_get_event_type($e);
+    return $et unless $enum;
+    GdkEventType($et);
   }
 
   proto method get_history (|)
@@ -188,7 +212,7 @@ class GDK::Event:ver<4> {
   multi method get_history ($out_n_coords is rw, :$carray = False) {
     my guint $n = 0;
 
-    my $h = gdk_event_get_history($!gdk-e, $n);
+    my $h = gdk_event_get_history(self.GdkEvent, $n);
     $out_n_coords = $n;
     $carray ?? $h !! CArrayToArray($h, $n);
   }
@@ -200,9 +224,9 @@ class GDK::Event:ver<4> {
       modifier-state
     >
   {
-    my $v = gdk_event_get_modifier_state($!gdk-e);
+    my $v = gdk_event_get_modifier_state(self.GdkEvent);
     return $v unless $enum;
-    GdkModifierStateEnum( $v );
+    GdkModifierTypeEnum( $v );
   }
 
   method get_pointer_emulated
@@ -212,7 +236,7 @@ class GDK::Event:ver<4> {
       pointer-emulated
     >
   {
-    so gdk_event_get_pointer_emulated($!gdk-e);
+    so gdk_event_get_pointer_emulated(self.GdkEvent);
   }
 
   proto method get_position (|)
@@ -225,7 +249,7 @@ class GDK::Event:ver<4> {
   multi method get_position ($x is rw, $y is rw) {
     my gdouble ($xx, $yy) = 0e0;
 
-    gdk_event_get_position($!gdk-e, $xx, $yy);
+    gdk_event_get_position(self.GdkEvent, $xx, $yy);
     ($x, $y) = ($xx, $yy);
   }
 
@@ -236,7 +260,7 @@ class GDK::Event:ver<4> {
     >
   {
     propReturnObject(
-      gdk_event_get_seat($!gdk-e),
+      gdk_event_get_seat(self.GdkEvent),
       $raw,
       |GDK::Seat.getTypePair
     );
@@ -249,7 +273,7 @@ class GDK::Event:ver<4> {
     >
   {
     propReturnObject(
-      gdk_event_get_surface($!gdk-e),
+      gdk_event_get_surface(self.GdkEvent),
       $raw,
       |GDK::Surface.getTypePair
     );
@@ -261,7 +285,7 @@ class GDK::Event:ver<4> {
       time
     >
   {
-    gdk_event_get_time($!gdk-e);
+    gdk_event_get_time(self.GdkEvent);
   }
 
   method get_type is also<get-type> {
@@ -271,29 +295,42 @@ class GDK::Event:ver<4> {
   }
 
   method ref {
-    gdk_event_ref($!gdk-e);
+    gdk_event_ref(self.GdkEvent);
     self;
   }
 
   method triggers_context_menu is also<triggers-context-menu> {
-    so gdk_event_triggers_context_menu($!gdk-e);
+    so gdk_event_triggers_context_menu(self.GdkEvent);
   }
 
   method unref {
-    gdk_event_unref($!gdk-e);
+    gdk_event_unref(self.GdkEvent);
   }
 }
 
 
 class GDK::Event::Button:ver<4> is GDK::Event {
-  has $!gdk-b 
+  has GdkButtonEvent $!gdk-e-b;
+
+  submethod BUILD ( :$gdk-button-event ) {
+    $!gdk-e-b = $gdk-button-event
+  }
+
+  method new (GdkButtonEvent $e) {
+    $e ?? self.bless( gdk-button-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkButtonEvent
+    is also<GdkButtonEvent>
+  { $!gdk-e-b }
+
   method get_button
     is also<
       get-button
       button
     >
   {
-    gdk_button_event_get_button($!gdk-e);
+    gdk_button_event_get_button(self.GdkEvent);
   }
 
   method get_type is also<get-type> {
@@ -304,13 +341,27 @@ class GDK::Event::Button:ver<4> is GDK::Event {
 }
 
 class GDK::Event::Crossing:ver<4> is GDK::Event {
+  has GdkCrossingEvent $!gdk-e-c;
+
+  submethod BUILD ( :$gdk-crossing-event ) {
+    $!gdk-e-c = $gdk-crossing-event
+  }
+
+  method new (GdkCrossingEvent $e) {
+    $e ?? self.bless( gdk-crossing-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkCrossingEvent
+    is also<GdkCrossingEvent>
+  { $!gdk-e-c }
+
   method get_detail
     is also<
       get-detail
       detail
     >
   {
-    gdk_crossing_event_get_detail($!gdk-e);
+    gdk_crossing_event_get_detail(self.GdkEvent);
   }
 
   method get_focus
@@ -319,7 +370,7 @@ class GDK::Event::Crossing:ver<4> is GDK::Event {
       focus
     >
   {
-    gdk_crossing_event_get_focus($!gdk-e);
+    gdk_crossing_event_get_focus(self.GdkEvent);
   }
 
   method get_mode
@@ -328,7 +379,7 @@ class GDK::Event::Crossing:ver<4> is GDK::Event {
       mode
     >
   {
-    gdk_crossing_event_get_mode($!gdk-e);
+    gdk_crossing_event_get_mode(self.GdkEvent);
   }
 
   method get_type is also<get-type> {
@@ -339,6 +390,20 @@ class GDK::Event::Crossing:ver<4> is GDK::Event {
 }
 
 class GDK::Event::Delete:ver<4> is GDK::Event {
+  has GdkDeleteEvent $!gdk-e-d;
+
+  submethod BUILD ( :$gdk-delete-event ) {
+    $!gdk-e-d = $gdk-delete-event
+  }
+
+  method new (GdkDeleteEvent $e) {
+    $e ?? self.bless( gdk-delete-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkDeleteEvent
+    is also<GdkDeleteEvent>
+  { $!gdk-e-d }
+
   method get_type is also<get-type> {
     state ($n, $t);
 
@@ -347,13 +412,31 @@ class GDK::Event::Delete:ver<4> is GDK::Event {
 }
 
 class GDK::Events::DnD:ver<4> is GDK::Event {
-  method get_drop
+  has GdkDndEvent $!gdk-e-dnd;
+
+  submethod BUILD ( :$gdk-dnd-event ) {
+    $!gdk-e-dnd = $gdk-dnd-event
+  }
+
+  method new (GdkDndEvent $e) {
+    $e ?? self.bless( gdk-dnd-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkDndEvent
+    is also<GdkDndEvent>
+  { $!gdk-e-dnd }
+
+  method get_drop ( :$raw = False )
     is also<
       get-drop
       drop
     >
   {
-    gdk_dnd_event_get_drop($!gdk-e);
+    propReturnObject(
+      gdk_dnd_event_get_drop(self.GdkEvent),
+      $raw,
+      |GDK::Drop.getTypePair
+    );
   }
 
   method get_type is also<get-type> {
@@ -364,13 +447,27 @@ class GDK::Events::DnD:ver<4> is GDK::Event {
 }
 
 class GDK::Event::Focus:ver<4> is GDK::Event {
+  has GdkFocusEvent $!gdk-e-f;
+
+  submethod BUILD ( :$gdk-focus-event ) {
+    $!gdk-e-f = $gdk-focus-event
+  }
+
+  method new (GdkFocusEvent $e) {
+    $e ?? self.bless( gdk-focus-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkFocusEvent
+    is also<GdkFocusEvent>
+  { $!gdk-e-f }
+
   method get_in
     is also<
       get-in
       in
     >
   {
-    gdk_focus_event_get_in($!gdk-e);
+    gdk_focus_event_get_in(self.GdkEvent);
   }
 
   method get_type is also<get-type> {
@@ -382,6 +479,20 @@ class GDK::Event::Focus:ver<4> is GDK::Event {
 
 
 class GDK::Event::GrabBroken:ver<4> is GDK::Event {
+  has GdkGrabBrokenEvent $!gdk-e-gb;
+
+  submethod BUILD ( :$gdk-grab-event ) {
+    $!gdk-e-gb = $gdk-grab-event
+  }
+
+  method new (GdkGrabBrokenEvent $e) {
+    $e ?? self.bless( gdk-grab-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkGrabBrokenEvent
+    is also<GdkGrabBrokenEvent>
+  { $!gdk-e-gb }
+
   method get_grab_surface ( :$raw = False )
     is also<
       get-grab-surface
@@ -390,7 +501,7 @@ class GDK::Event::GrabBroken:ver<4> is GDK::Event {
     >
   {
     propReturnObject(
-      gdk_grab_broken_event_get_grab_surface($!gdk-e),
+      gdk_grab_broken_event_get_grab_surface(self.GdkEvent),
       $raw,
       |GDK::Surface.getTypePair
     );
@@ -402,7 +513,7 @@ class GDK::Event::GrabBroken:ver<4> is GDK::Event {
       implicit
     >
   {
-    so gdk_grab_broken_event_get_implicit($!gdk-e);
+    so gdk_grab_broken_event_get_implicit(self.GdkEvent);
   }
 
   method get_type is also<get-type> {
@@ -414,6 +525,20 @@ class GDK::Event::GrabBroken:ver<4> is GDK::Event {
 
 
 class GDK::Event::Key:ver<4> is GDK::Event {
+  has GdkKeyEvent $!gdk-e-k;
+
+  submethod BUILD ( :$gdk-key-event ) {
+    $!gdk-e-k = $gdk-key-event
+  }
+
+  method new (GdkKeyEvent $e) {
+    $e ?? self.bless( gdk-key-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkKeyEvent
+    is also<GdkKeyEvent>
+  { $!gdk-e-k }
+
   method get_consumed_modifiers ( :flags(:$set) = True )
     is also<
       get-consumed-modifiers
@@ -421,7 +546,7 @@ class GDK::Event::Key:ver<4> is GDK::Event {
       consumed-modifiers
     >
   {
-    my $m = gdk_key_event_get_consumed_modifiers($!gdk-e);
+    my $m = gdk_key_event_get_consumed_modifiers(self.GdkEvent);
     return $m unless $set;
     getFlags(GdkModifierTypeEnum, $m);
   }
@@ -432,7 +557,7 @@ class GDK::Event::Key:ver<4> is GDK::Event {
       keycode
     >
   {
-    gdk_key_event_get_keycode($!gdk-e);
+    gdk_key_event_get_keycode(self.GdkEvent);
   }
 
   method get_keyval
@@ -441,7 +566,7 @@ class GDK::Event::Key:ver<4> is GDK::Event {
       keyval
     >
   {
-    gdk_key_event_get_keyval($!gdk-e);
+    gdk_key_event_get_keyval(self.GdkEvent);
   }
 
   method get_layout
@@ -450,7 +575,7 @@ class GDK::Event::Key:ver<4> is GDK::Event {
       layout
     >
   {
-    gdk_key_event_get_layout($!gdk-e);
+    gdk_key_event_get_layout(self.GdkEvent);
   }
 
   method get_level
@@ -459,7 +584,7 @@ class GDK::Event::Key:ver<4> is GDK::Event {
       level
     >
   {
-    gdk_key_event_get_level($!gdk-e);
+    gdk_key_event_get_level(self.GdkEvent);
   }
 
   proto method get_match (|)
@@ -470,16 +595,16 @@ class GDK::Event::Key:ver<4> is GDK::Event {
   }
   multi method get_match (
      $keyval      is rw,
-     $modifiers   is rw
-    :flags(:$set)       = True,
-    :$all               = False
+     $modifiers   is rw,
+    :flags(:$set)        = True,
+    :$all                = False
   )
     is also<get-match>
   {
     my guint           $k = 0;
     my GdkModifierType $m = 0;
 
-    my $rv = gdk_key_event_get_match($!gdk-e, $kl, $m);
+    my $rv = gdk_key_event_get_match(self.GdkEvent, $k, $m);
     $m = getFlags(GdkModifierTypeEnum, $m) if $set;
     ($keyval, $modifiers) = ($k, $m);
     $all.not ?? $rv !! ($rv, $keyval, $modifiers);
@@ -492,7 +617,7 @@ class GDK::Event::Key:ver<4> is GDK::Event {
   }
 
   method is_modifier is also<is-modifier> {
-    so gdk_key_event_is_modifier($!gdk-e);
+    so gdk_key_event_is_modifier(self.GdkEvent);
   }
 
   multi method matches ( :flags(:$set) = True ) {
@@ -507,7 +632,7 @@ class GDK::Event::Key:ver<4> is GDK::Event {
     my guint           $k = 0;
     my GdkModifierType $m = 0;
 
-    my $rv = gdk_key_event_matches($!gdk-e, $k, $m);
+    my $rv = gdk_key_event_matches(self.GdkEvent, $k, $m);
     $rv = GdkKeyMatchEnum($rv) if $enum;
     $m = getFlags(GdkModifierTypeEnum, $m) if $set;
     ($keyval, $modifiers) = ($k, $m);
@@ -517,6 +642,20 @@ class GDK::Event::Key:ver<4> is GDK::Event {
 }
 
 class GDK::Event::Motion:ver<4> is GDK::Event {
+  has GdkMotionEvent $!gdk-e-m;
+
+  submethod BUILD ( :$gdk-motion-event ) {
+    $!gdk-e-m = $gdk-motion-event
+  }
+
+  method new (GdkMotionEvent $e) {
+    $e ?? self.bless( gdk-motion-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkMotionEvent
+    is also<GdkMotionEvent>
+  { $!gdk-e-m }
+
   method get_type is also<get-type> {
     state ($n, $t);
 
@@ -525,6 +664,19 @@ class GDK::Event::Motion:ver<4> is GDK::Event {
 }
 
 class GDK::Event::Pad:ver<4> is GDK::Event {
+  has GdkPadEvent $!gdk-e-p;
+
+  submethod BUILD ( :$gdk-pad-event ) {
+    $!gdk-e-p = $gdk-pad-event
+  }
+
+  method new (GdkPadEvent $e) {
+    $e ?? self.bless( gdk-pad-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkPadEvent
+    is also<GdkPadEvent>
+  { $!gdk-e-p }
 
   proto method get_axis_value (|)
   { * }
@@ -542,7 +694,7 @@ class GDK::Event::Pad:ver<4> is GDK::Event {
     my guint   $i = 0;
     my gdouble $v = 0e0;
 
-    gdk_pad_event_get_axis_value($!gdk-e, $i, $v);
+    gdk_pad_event_get_axis_value(self.GdkEvent, $i, $v);
     ($index, $value) = ($i, $v);
   }
 
@@ -552,16 +704,16 @@ class GDK::Event::Pad:ver<4> is GDK::Event {
       button
     >
   {
-    gdk_pad_event_get_button($!gdk-e);
+    gdk_pad_event_get_button(self.GdkEvent);
   }
 
   proto method get_group_mode (|)
   { * }
 
-  method get_group_mode {
+  multi method get_group_mode {
     samewith($, $);
   }
-  method get_group_mode ($group is rw, $mode is rw)
+  multi method get_group_mode ($group is rw, $mode is rw)
     is also<
       get-group-mode
       group_mode
@@ -570,7 +722,7 @@ class GDK::Event::Pad:ver<4> is GDK::Event {
   {
     my guint ($g, $m) = 0 xx 2;
 
-    gdk_pad_event_get_group_mode($!gdk-e, $g, $m);
+    gdk_pad_event_get_group_mode(self.GdkEvent, $g, $m);
     ($group, $mode) = ($g, $m);
   }
 
@@ -582,6 +734,20 @@ class GDK::Event::Pad:ver<4> is GDK::Event {
 }
 
 class GDK::Event::Proximity:ver<4> is GDK::Event {
+  has GdkProximityEvent $!gdk-e-prox;
+
+  submethod BUILD ( :$gdk-prox-event ) {
+    $!gdk-e-prox = $gdk-prox-event
+  }
+
+  method new (GdkProximityEvent $e) {
+    $e ?? self.bless( gdk-prox-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkProximityEvent
+    is also<GdkProximityEvent>
+  { $!gdk-e-prox }
+
   method get_type is also<get-type> {
     state ($n, $t);
 
@@ -590,6 +756,20 @@ class GDK::Event::Proximity:ver<4> is GDK::Event {
 }
 
 class GDK::Event::Scroll:ver<4> is GDK::Event {
+  has GdkScrollEvent $!gdk-e-s;
+
+  submethod BUILD ( :$gdk-scroll-event ) {
+    $!gdk-e-s = $gdk-scroll-event
+  }
+
+  method new (GdkScrollEvent $e) {
+    $e ?? self.bless( gdk-scroll-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkScrollEvent
+    is also<GdkScrollEvent>
+  { $!gdk-e-s }
+
   proto method get_deltas (|)
   { * }
 
@@ -604,7 +784,7 @@ class GDK::Event::Scroll:ver<4> is GDK::Event {
   {
     my gdouble ($dx, $dy) = 0e0 xx 2;
 
-    gdk_scroll_event_get_deltas($!gdk-e, $dx, $dy);
+    gdk_scroll_event_get_deltas(self.GdkEvent, $dx, $dy);
     ($delta_x, $delta_y) = ($dx, $dy);
   }
 
@@ -614,7 +794,7 @@ class GDK::Event::Scroll:ver<4> is GDK::Event {
       direction
     >
   {
-    my $d = gdk_scroll_event_get_direction($!gdk-e);
+    my $d = gdk_scroll_event_get_direction(self.GdkEvent);
     return $d unless $enum;
     GdkScrollDirectionEnum($d);
   }
@@ -631,17 +811,31 @@ class GDK::Event::Scroll:ver<4> is GDK::Event {
       unit
     >
   {
-    my $u = gdk_scroll_event_get_unit($!gdk-e);
+    my $u = gdk_scroll_event_get_unit(self.GdkEvent);
     return $u unless $enum;
     GdkScrollUnit($u);
   }
 
   method is_stop is also<is-stop> {
-    so gdk_scroll_event_is_stop($!gdk-e);
+    so gdk_scroll_event_is_stop(self.GdkEvent);
   }
 }
 
 class GDK::Event::Touch:ver<4> is GDK::Event {
+  has GdkTouchEvent $!gdk-e-t;
+
+  submethod BUILD ( :$gdk-touch-event ) {
+    $!gdk-e-t = $gdk-touch-event
+  }
+
+  method new (GdkTouchEvent $e) {
+    $e ?? self.bless( gdk-touch-event => $e, gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkTouchEvent
+    is also<GdkTouchEvent>
+  { $!gdk-e-t }
+
   method get_emulating_pointer
     is also<
       get-emulating-pointer
@@ -649,7 +843,7 @@ class GDK::Event::Touch:ver<4> is GDK::Event {
       emulating-pointer
     >
   {
-    so gdk_touch_event_get_emulating_pointer($!gdk-e);
+    so gdk_touch_event_get_emulating_pointer(self.GdkEvent);
   }
 
   method get_type is also<get-type> {
@@ -660,13 +854,27 @@ class GDK::Event::Touch:ver<4> is GDK::Event {
 }
 
 class GDK::Event::Touchpad:ver<4> is GDK::Event {
+  has GdkTouchpadEvent $!gdk-e-tp;
+
+  submethod BUILD ( :$gdk-touchpad-event ) {
+    $!gdk-e-tp = $gdk-touchpad-event
+  }
+
+  method new (GdkTouchpadEvent $e) {
+    $e ?? self.bless( gdk-touchpad-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkTouchpadEvent
+    is also<GdkTouchpadEvent>
+  { $!gdk-e-tp }
+
   proto method get_deltas (|)
   { * }
 
-  method get_deltas {
+  multi method get_deltas {
     samewith($, $);
   }
-  method get_deltas ($deltax is rw, $deltay is rw)
+  multi method get_deltas ($deltax is rw, $deltay is rw)
     is also<
       get-deltas
       deltas
@@ -674,7 +882,7 @@ class GDK::Event::Touchpad:ver<4> is GDK::Event {
   {
     my gdouble ($dx, $dy) = 0e0 xx 2;
 
-    gdk_touchpad_event_get_deltas($!gdk-e, $dx, $dy);
+    gdk_touchpad_event_get_deltas(self.GdkEvent, $dx, $dy);
     ($deltax, $deltay) = ($dx, $dy);
   }
 
@@ -686,7 +894,7 @@ class GDK::Event::Touchpad:ver<4> is GDK::Event {
       phase
     >
   {
-    my $p = gdk_touchpad_event_get_gesture_phase($!gdk-e);
+    my $p = gdk_touchpad_event_get_gesture_phase(self.GdkEvent);
     return $p unless $enum;
     GdkTouchpadGesturePhaseEnum($p);
   }
@@ -699,7 +907,7 @@ class GDK::Event::Touchpad:ver<4> is GDK::Event {
       elems
     >
   {
-    gdk_touchpad_event_get_n_fingers($!gdk-e);
+    gdk_touchpad_event_get_n_fingers(self.GdkEvent);
   }
 
   method get_pinch_angle_delta
@@ -710,7 +918,7 @@ class GDK::Event::Touchpad:ver<4> is GDK::Event {
       delta
     >
   {
-    gdk_touchpad_event_get_pinch_angle_delta($!gdk-e);
+    gdk_touchpad_event_get_pinch_angle_delta(self.GdkEvent);
   }
 
   method get_pinch_scale
@@ -721,7 +929,7 @@ class GDK::Event::Touchpad:ver<4> is GDK::Event {
       scale
     >
   {
-    gdk_touchpad_event_get_pinch_scale($!gdk-e);
+    gdk_touchpad_event_get_pinch_scale(self.GdkEvent);
   }
 
   method get_type is also<get-type> {
@@ -731,7 +939,63 @@ class GDK::Event::Touchpad:ver<4> is GDK::Event {
   }
 }
 
+our subset GdkAnyEvent is export of Mu where
+  GdkEvent            | GdkButtonEvent      | GdkCrossingEvent    |
+  GdkDeleteEvent      | GdkFocusEvent       | GdkGrabBrokenEvent  |
+  GdkKeyEvent         | GdkMotionEvent      | GdkPadEvent         |
+  GdkProximityEvent   | GdkScrollEvent      | GdkTouchEvent       |
+  GdkTouchpadEvent;
+
+class GDK::Events {
+
+  my $button-types   = (GDK_BUTTON_PRESS, GDK_BUTTON_RELEASE).any;
+  my $cross-types    = (GDK_ENTER_NOTIFY, GDK_LEAVE_NOTIFY).any;
+  my $key-types      = (GDK_KEY_PRESS, GDK_KEY_RELEASE).any;
+  my $prox-types     = (GDK_PROXIMITY_IN, GDK_PROXIMITY_OUT).any;
+  my $drag-types     = (GDK_DRAG_ENTER,
+                        GDK_DRAG_LEAVE, GDK_DRAG_MOTION, GDK_DROP_START).any;
+  my $pad-types      = (GDK_PAD_BUTTON_PRESS, GDK_PAD_BUTTON_RELEASE,
+                        GDK_PAD_RING, GDK_PAD_STRIP,GDK_PAD_GROUP_MODE).any;
+  my $touch-types    = (GDK_TOUCH_BEGIN, GDK_TOUCH_UPDATE, GDK_TOUCH_END,
+                        GDK_TOUCH_CANCEL).any;
+  my $touchpad-types = (GDK_TOUCHPAD_SWIPE, GDK_TOUCHPAD_PINCH,
+                        GDK_TOUCHPAD_HOLD).any;
+
+  method new (GdkAnyEvent $e) {
+    (
+      do given GDK::Events.get_event_type($e) {
+        when    $button-types     { GDK::Event::Button     }
+        when    $cross-types      { GDK::Event::Crossing   }
+        when    GDK_DELETE        { GDK::Event::Delete     }
+        when    $drag-types       { GDK::Events::DnD       }
+        when    GDK_FOCUS_CHANGE  { GDK::Event::Focus      }
+        when    GDK_GRAB_BROKEN   { GDK::Event::GrabBroken }
+        when    $key-types        { GDK::Event::Key        }
+        when    GDK_MOTION_NOTIFY { GDK::Event::Motion     }
+        when    $pad-types        { GDK::Event::Pad        }
+        when    $prox-types       { GDK::Event::Proximity  }
+        when    GDK_SCROLL        { GDK::Event::Scroll     }
+        when    $touch-types      { GDK::Event::Touch      }
+        when    $touchpad-types   { GDK::Event::Touchpad   }
+        default                   { GDK::Event             }
+      }
+    ).new($e);
+  }
+
+}
+
+
 class GDK::Event::Sequence:ver<4> {
+  has GdkEventSequence $!gdk-es;
+
+  method new (GdkEventSequence $e) {
+    $e ?? self.bless( gdk-event => $e ) !! Nil;
+  }
+
+  method GDK::Raw::Definitions::GdkEventSequence
+    is also<GdkEventSequence>
+  { $!gdk-es }
+
   method get_type is also<get-type> {
     state ($n, $t);
 
