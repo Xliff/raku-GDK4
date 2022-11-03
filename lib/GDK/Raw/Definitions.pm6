@@ -23,6 +23,7 @@ class GdkDeviceTool            is repr<CPointer> does GLib::Roles::Pointers is e
 class GdkDisplay               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDisplayManager        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDrag                  is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkDrawContext           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkDrop                  is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkEventSequence         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkFileList              is repr<CPointer> does GLib::Roles::Pointers is export { }
