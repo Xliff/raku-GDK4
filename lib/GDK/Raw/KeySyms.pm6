@@ -2,6 +2,8 @@ use v6.c;
 
 unit package GDK::Raw::KeySyms;
 
+### /usr/src/gtk4-4.8.1+ds/gdk/gdkkeysyms.h
+
 constant GDK_KEY_VoidSymbol                  is export = 0xffffff;
 constant GDK_KEY_BackSpace                   is export = 0xff08;
 constant GDK_KEY_Tab                         is export = 0xff09;
