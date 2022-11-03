@@ -34,6 +34,7 @@ INCLUDES="\
 -I${P6_GTK_HOME}/p6-GUPnP/lib           \
 -I${P6_GTK_HOME}/p6-Pango/lib           \
 -I${P6_GTK_HOME}/p6-GIO/lib             \
+-I${P6_GTK_HOME}/raku-GDK-Pixbuf/lib    \
 -I${P6_GTK_HOME}/p6-GtkBuilder/lib      \
 -I${P6_GTK_HOME}/p6-WebkitGTK/lib       \
 -I${P6_GTK_HOME}/p6-SourceViewGTK/lib   \
