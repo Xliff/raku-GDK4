@@ -104,8 +104,8 @@ sub gdk_file_list_get_type
 { * }
 
 sub gdk_file_list_new_from_array (
-  CArray[GFile] $files,
-  gsize         $n_files
+  CArray[Pointer[GFile]] $files,
+  gsize                  $n_files
 )
   returns GdkFileList
   is      native(gdk4)
