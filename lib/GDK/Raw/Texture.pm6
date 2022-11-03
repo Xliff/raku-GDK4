@@ -5,6 +5,7 @@ use NativeCall;
 use GLib::Raw::Definitions;
 use GLib::Raw::Structs;
 use GIO::Raw::Definitions;
+use GDK::Pixbuf::Raw::Definitions;
 use GDK::Raw::Definitions:ver<4>;
 
 unit package GDK::Raw::Texture:ver<4>;
