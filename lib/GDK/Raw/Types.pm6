@@ -3,6 +3,7 @@ use v6.c;
 use GLib::Raw::Exports;
 use Pango::Raw::Exports;
 use GIO::Raw::Exports;
+use GDK::Pixbuf::Raw::Exports;
 use GDK::Raw::Exports:ver<4>;
 
 unit package GDK::Raw::Types:ver<4>;
@@ -28,6 +29,9 @@ need GIO::Raw::Quarks;
 need GIO::Raw::Structs;
 need GIO::Raw::Subs;
 need GIO::Raw::Exports;
+need GDK::Pixbuf::Raw::Definitions;
+need GDK::Pixbuf::Raw::Enums;
+need GDK::Pixbuf::Raw::Structs;
 need GDK::Raw::Compat:ver<4>;
 need GDK::Raw::Definitions:ver<4>;
 need GDK::Raw::Enums:ver<4>;
@@ -38,5 +42,6 @@ BEGIN {
   glib-re-export($_) for |@glib-exports,
                          |@pango-exports,
                          |@gio-exports,
+                         |@gdk-pixbuf-exports,
                          |@gdk4-exports;
 }
