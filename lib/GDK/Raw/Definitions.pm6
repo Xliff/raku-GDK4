@@ -9,9 +9,10 @@ unit package GDK::Raw::Definitions:ver<4>;
 
 constant gdk4 is export = 'gtk-4';
 
-#constant cairo_content_t is export := Cairo::cairo_content_t;
-#constant cairo_region_t  is export := Cairo::cairo_region_t;
+constant cairo_content_t is export := gpointer; # Cairo::cairo_content_t;
+constant cairo_region_t  is export := gpointer; # Cairo::cairo_region_t;
 constant cairo_surface_t is export := Cairo::cairo_surface_t;
+constant cairo_t         is export := Cairo::cairo_t;
 
 class GdkAppLaunchContext      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkCairoContext          is repr<CPointer> does GLib::Roles::Pointers is export { }
