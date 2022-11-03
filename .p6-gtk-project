@@ -1,4 +1,4 @@
-prefix=GDK::
+prefix=GDK
 modules=GDK::Raw::Types
 backups=backup,bitbucket,google-backup,azure-backupm,hut
 excluded_namespaces=GDK::Pixbuf::
