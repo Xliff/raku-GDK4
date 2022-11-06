@@ -37,6 +37,7 @@ class GdkVulkanContext         is repr<CPointer> does GLib::Roles::Pointers is e
 
 class GdkContentFormats        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkContentFormatsBuilder is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkContentSerializer     is repr<CPointer> does GLib::Roles::Pointers is export { }
 
 class GdkEvent                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkButtonEvent           is repr<CPointer> does GLib::Roles::Pointers is export { }
