@@ -229,3 +229,17 @@ sub gdk_content_formats_unref (GdkContentFormats $formats)
   is      native(gdk4)
   is      export
 { * }
+
+### /usr/src/gtk4-4.8.1+ds/gdk/gdkcontentserializer.h
+
+sub gdk_content_formats_union_serialize_gtypes (GdkContentFormats $formats)
+  returns GdkContentFormats
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_content_formats_union_serialize_mime_types (GdkContentFormats $formats)
+  returns GdkContentFormats
+  is      native(gdk4)
+  is      export
+{ * }

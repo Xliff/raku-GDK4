@@ -3,6 +3,7 @@ use v6.c;
 use NativeCall;
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GDK::Raw::Types:ver<4>;
 use GDK::Raw::Content::Formats:ver<4>;
 
@@ -177,6 +178,22 @@ class GDK::Content::Formats {
 
   method unref {
     gdk_content_formats_unref($!gdk-cf);
+  }
+
+  method union_serialize_gtypes ( :$raw = False ) {
+    propReturnObject(
+      gdk_content_formats_union_serialize_gtypes($!gdk-cf),
+      $raw,
+      |self.getTypePair
+    );
+  }
+
+  method union_serialize_mime_types ( :$raw = False ) {
+    propReturnObject(
+      gdk_content_formats_union_serialize_mime_types($!gdk-cf),
+      $raw,
+      |self.getTypePair
+    )
   }
 
 }
