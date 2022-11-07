@@ -55,6 +55,7 @@ class GdkMemoryTexture         is repr<CPointer> does GLib::Roles::Pointers is e
 class GdkMotionEvent           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkPadEvent              is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkPaintable             is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkPopup                 is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkProximityEvent        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkScrollEvent           is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkSnapshot              is repr<CPointer> does GLib::Roles::Pointers is export { }
