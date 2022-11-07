@@ -1,5 +1,7 @@
 use v6.c;
 
+use NativeCall;
+
 use GLib::Raw::Definitions;
 use GDK::Raw::Definitions:ver<4>;
 use GDK::Raw::Enums:ver<4>;
