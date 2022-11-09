@@ -205,6 +205,10 @@ our enum GdkMemoryFormatEnum is export <
   GDK_MEMORY_N_FORMATS
 >;
 
+constant GDK_MEMORY_DEFAULT is export = $*KERNEL.endian == BigEndian
+  ?? GDK_MEMORY_A8R8G8B8_PREMULTIPLIED
+  !! GDK_MEMORY_B8G8R8A8_PREMULTIPLIED;
+
 constant GdkModifierType is export := guint32;
 our enum GdkModifierTypeEnum is export <
   GDK_SHIFT_MASK
