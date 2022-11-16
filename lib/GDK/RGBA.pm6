@@ -9,6 +9,8 @@ use GDK::Raw::RGBA:ver<4>;
 use GLib::Roles::Implementor;
 
 class GDK::RGBA {
+  also does GLib::Roles::Implementor;
+  
   has GdkRGBA $!gdk-rgba is implementor handles <red green blue alpha>;
 
   submethod BUILD ( :$!gdk-rgba ) { }
@@ -57,7 +59,7 @@ class GDK::RGBA {
   method g       is rw { self.green      }
   method b       is rw { self.blue       }
   method a       is rw { self.alpha      }
-  
+
   method gist          { $!gdk-rgba.gist }
 
   method copy {
