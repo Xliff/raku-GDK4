@@ -2,8 +2,8 @@ use v6.c;
 
 use NativeCall;
 
-use GDK::Raw::Types:ver<4>
-use GDK::Raw::ToplevelSize:ver<4>;
+use GDK::Raw::Types:ver<4>;
+use GDK::Raw::Toplevel::Size:ver<4>;
 
 use GLib::Roles::Implementor;
 
@@ -30,7 +30,7 @@ class GDK::TopLevel::Size {
     samewith($, $);
   }
   multi method get_bounds ($bounds_width is rw, $bounds_height is rw) {
-    my gint ($h, $h) = 0 xx 2;
+    my gint ($w, $h) = 0 xx 2;
 
     gdk_toplevel_size_get_bounds($!gdk-tls, $w, $h);
     ($bounds_width, $bounds_height) = ($w, $h);
