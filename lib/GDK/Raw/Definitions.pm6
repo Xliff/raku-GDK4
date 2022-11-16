@@ -32,6 +32,7 @@ class GdkFrameTimings          is repr<CPointer> does GLib::Roles::Pointers is e
 class GdkGLContext             is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkMonitor               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkSurface               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkToplevelLayout        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkTexture               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkToplevelSize          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkVulkanContext         is repr<CPointer> does GLib::Roles::Pointers is export { }
