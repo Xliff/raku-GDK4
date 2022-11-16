@@ -243,3 +243,19 @@ sub gdk_content_formats_union_serialize_mime_types (GdkContentFormats $formats)
   is      native(gdk4)
   is      export
 { * }
+
+### /usr/src/gtk4-4.8.1+ds/gdk/gdkcontentdeserializer.h
+
+sub gdk_content_formats_union_deserialize_gtypes (GdkContentFormats $formats)
+  returns GdkContentFormats
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_content_formats_union_deserialize_mime_types (
+  GdkContentFormats $formats
+)
+  returns GdkContentFormats
+  is      native(gdk4)
+  is      export
+{ * }

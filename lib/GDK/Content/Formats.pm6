@@ -196,6 +196,22 @@ class GDK::Content::Formats {
     )
   }
 
+  method union_deserialize_gtypes ( :$raw = False ) {
+    propReturnObject(
+      gdk_content_formats_union_deserialize_gtypes($!gdk-cf),
+      $raw,
+      |self.getTypePair
+    );
+  }
+
+  method union_deserialize_mime_types ( :$raw = False ) {
+    propReturnObject(
+      gdk_content_formats_union_deserialize_mime_types($!gdk-cf),
+      $raw,
+      |self.getTypePair
+    );
+  }
+
 }
 
 
