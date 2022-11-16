@@ -33,6 +33,7 @@ class GdkGLContext             is repr<CPointer> does GLib::Roles::Pointers is e
 class GdkMonitor               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkSurface               is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkTexture               is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkToplevelSize          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkVulkanContext         is repr<CPointer> does GLib::Roles::Pointers is export { }
 
 class GdkContentFormats        is repr<CPointer> does GLib::Roles::Pointers is export { }
