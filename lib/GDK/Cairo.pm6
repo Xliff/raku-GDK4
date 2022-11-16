@@ -65,4 +65,8 @@ augment class Cairo::Surface {
     #);
   }
 
+  method Cairo::cairo_surface_t {
+    self.surface
+  }
+
 }

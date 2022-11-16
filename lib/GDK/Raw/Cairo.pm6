@@ -4,6 +4,7 @@ use NativeCall;
 
 use Cairo;
 use GLib::Raw::Definitions;
+use GDK::Pixbuf::Raw::Definitions;
 use GDK::Raw::Definitions:ver<4>;
 use GDK::Raw::Structs:ver<4>;
 
