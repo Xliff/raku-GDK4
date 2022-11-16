@@ -4,6 +4,19 @@ use GLib::Raw::Definitions;
 
 unit package GDK::Raw::Enums:ver<4>;
 
+constant GdkAnchorHints is export := guint32;
+our enum GdkAnchorHintsEnum is export (
+  GDK_ANCHOR_FLIP_X   => 1 +< 0,
+  GDK_ANCHOR_FLIP_Y   => 1 +< 1,
+  GDK_ANCHOR_SLIDE_X  => 1 +< 2,
+  GDK_ANCHOR_SLIDE_Y  => 1 +< 3,
+  GDK_ANCHOR_RESIZE_X => 1 +< 4,
+  GDK_ANCHOR_RESIZE_Y => 1 +< 5,
+  GDK_ANCHOR_FLIP     => 1 +< 0 +| 1 +< 1, #= GDK_ANCHOR_FLIP_X | GDK_ANCHOR_FLIP_Y,
+  GDK_ANCHOR_SLIDE    => 1 +< 2 +| 1 +< 3, #= GDK_ANCHOR_SLIDE_X | GDK_ANCHOR_SLIDE_Y,
+  GDK_ANCHOR_RESIZE   => 1 +< 4 +| 1 +< 5  #= GDK_ANCHOR_RESIZE_X | GDK_ANCHOR_RESIZE_Y,
+);
+
 constant GdkAxisFlags is export := guint32;
 our enum GdkAxisFlagsEnum is export <
   GDK_AXIS_FLAG_X
