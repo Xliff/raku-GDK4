@@ -2,8 +2,8 @@ use v6.c;
 
 use NativeCall;
 
-use GLib::Raw::Definition;
-use GDK::Raw::Definition:ver<4>;
+use GLib::Raw::Definitions;
+use GDK::Raw::Definitions:ver<4>;
 
 unit package GDK::Raw::Toplevel::Layout;
 
