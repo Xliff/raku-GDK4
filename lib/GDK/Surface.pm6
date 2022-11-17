@@ -1,5 +1,7 @@
 use v6.c;
 
+use Method::Also;
+
 use NativeCall;
 
 use GLib::Raw::Traits;
@@ -12,19 +14,54 @@ use GDK::Display;
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
+our subset GdkSurfaceAncestry is export of Mu
+  where GdkSurface | GObject;
+
 class GDK::Surface:ver<4> {
   also does GLib::Roles::Object;
   also does GDK::Roles::Signals::Generic;
 
   has GdkSurface $!gdk-s is implementor;
 
-  method new_popup (GdkSurface() $parent, Int() $autohide) {
+  submethod BUILD ( :$gdk-surface ) {
+    self.setGdkSurface($gdk-surface) if $gdk-surface
+  }
+
+  method setGdkSurface (GdkSurfaceAncestry $_) {
+    my $to-parent;
+
+    $!gdk-s = do {
+      when GdkSurface {
+        $to-parent = cast(GObject, $_);
+        $_;
+      }
+
+      default {
+        $to-parent = $_;
+        cast(GdkSurface, $_);
+      }
+    }
+    self!setObject($to-parent);
+  }
+
+  method GDK::Raw::Definitions::GdkSurface
+  { $!gdk-s }
+
+  multi method new (GdkSurfaceAncestry $gdk-surface, :$ref = True) {
+    return unless $gdk-surface;
+
+    my $o = self.bless( :$gdk-surface );
+    $o.ref if $ref;
+    $o;
+  }
+
+  method new_popup (GdkSurface() $parent, Int() $autohide) is also<new-popup> {
     my gboolean $a = $autohide;
 
     gdk_surface_new_popup($parent, $a);
   }
 
-  method new_toplevel (GdkDisplay() $display) {
+  method new_toplevel (GdkDisplay() $display) is also<new-toplevel> {
     gdk_surface_new_toplevel($display);
   }
 
@@ -67,7 +104,7 @@ class GDK::Surface:ver<4> {
   }
 
   # Type: GDKFrameClock
-  method frame-clock is rw  is g-property {
+  method frame-clock is rw  is g-property is also<frame_clock> {
     my $gv = GLib::Value.new( ::('GDK::FrameClock').get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -124,7 +161,7 @@ class GDK::Surface:ver<4> {
   }
 
   # Type: int
-  method scale-factor is rw  is g-property {
+  method scale-factor is rw  is g-property is also<scale_factor> {
     my $gv = GLib::Value.new( G_TYPE_INT );
     Proxy.new(
       FETCH => sub ($) {
@@ -149,11 +186,11 @@ class GDK::Surface:ver<4> {
     self.connect-pointer-rbool($!gdk-s, 'event');
   }
 
-  method enter-monitor {
+  method enter-monitor is also<enter_monitor> {
     self.connect-monitor($!gdk-s, 'enter-monitor');
   }
 
-  method leave-monitor {
+  method leave-monitor is also<leave_monitor> {
     self.connect-monitor($!gdk-s, 'leave-monitor');
   }
 
@@ -161,7 +198,7 @@ class GDK::Surface:ver<4> {
     gdk_surface_beep($!gdk-s);
   }
 
-  method create_cairo_context ( :$raw = False ) {
+  method create_cairo_context ( :$raw = False ) is also<create-cairo-context> {
     propReturnObject(
       gdk_surface_create_cairo_context($!gdk-s),
       $raw,
@@ -172,7 +209,9 @@ class GDK::Surface:ver<4> {
   method create_gl_context (
     CArray[Pointer[GError]]  $error = gerror,
                             :$raw   = False
-  ) {
+  )
+    is also<create-gl-context>
+  {
     clear_error
     my $rv = gdk_surface_create_gl_context($!gdk-s, $error);
     set_error($error);
@@ -184,7 +223,9 @@ class GDK::Surface:ver<4> {
     Int()              $width,
     Int()              $height,
                       :$raw      = False
-  ) {
+  )
+    is also<create-similar-surface>
+  {
     my gint ($w, $h) = ($width, $height);
 
     propReturnObject(
@@ -198,7 +239,9 @@ class GDK::Surface:ver<4> {
   method create_vulkan_context (
     CArray[Pointer[GError]]  $error = gerror,
                             :$raw   = False
-  ) {
+  )
+    is also<create-vulkan-context>
+  {
     clear_error;
     my $rv = gdk_surface_create_vulkan_context($!gdk-s, $error);
     set_error($error);
@@ -209,7 +252,7 @@ class GDK::Surface:ver<4> {
     gdk_surface_destroy($!gdk-s);
   }
 
-  method get_cursor ( :$raw = False ) {
+  method get_cursor ( :$raw = False ) is also<get-cursor> {
     propReturnObject(
       gdk_surface_get_cursor($!gdk-s),
       $raw,
@@ -217,7 +260,9 @@ class GDK::Surface:ver<4> {
     );
   }
 
-  method get_device_cursor (GdkDevice() $device, :$raw = False) {
+  method get_device_cursor (GdkDevice() $device, :$raw = False)
+    is also<get-device-cursor>
+  {
     propReturnObject(
       gdk_surface_get_device_cursor($!gdk-s, $device),
       $raw,
@@ -226,6 +271,7 @@ class GDK::Surface:ver<4> {
   }
 
   proto method get_device_position (|)
+    is also<get-device-position>
   { * }
 
   multi method get_device_position (GdkDevice() $device) {
@@ -247,7 +293,7 @@ class GDK::Surface:ver<4> {
     $all.not ?? $rv !! ($rv, $x, $y, $mask);
   }
 
-  method get_display ( :$raw = False ) {
+  method get_display ( :$raw = False ) is also<get-display> {
     propReturnObject(
       gdk_surface_get_display($!gdk-s),
       $raw,
@@ -255,7 +301,7 @@ class GDK::Surface:ver<4> {
     );
   }
 
-  method get_frame_clock ( :$raw = False ) {
+  method get_frame_clock ( :$raw = False ) is also<get-frame-clock> {
     propReturnObject(
       gdk_surface_get_frame_clock($!gdk-s),
       $raw,
@@ -263,25 +309,25 @@ class GDK::Surface:ver<4> {
     );
   }
 
-  method get_height {
+  method get_height is also<get-height> {
     gdk_surface_get_height($!gdk-s);
   }
 
-  method get_mapped {
+  method get_mapped is also<get-mapped> {
     so gdk_surface_get_mapped($!gdk-s);
   }
 
-  method get_scale_factor {
+  method get_scale_factor is also<get-scale-factor> {
     gdk_surface_get_scale_factor($!gdk-s);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gdk_surface_get_type, $n, $t );
   }
 
-  method get_width {
+  method get_width is also<get-width> {
     gdk_surface_get_width($!gdk-s);
   }
 
@@ -289,35 +335,42 @@ class GDK::Surface:ver<4> {
     gdk_surface_hide($!gdk-s);
   }
 
-  method is_destroyed {
+  method is_destroyed is also<is-destroyed> {
     so gdk_surface_is_destroyed($!gdk-s);
   }
 
-  method queue_render {
+  method queue_render is also<queue-render> {
     gdk_surface_queue_render($!gdk-s);
   }
 
-  method request_layout {
+  method request_layout is also<request-layout> {
     gdk_surface_request_layout($!gdk-s);
   }
 
-  method set_cursor (GdkCursor() $cursor) {
+  method set_cursor (GdkCursor() $cursor) is also<set-cursor> {
     gdk_surface_set_cursor($!gdk-s, $cursor);
   }
 
-  method set_device_cursor (GdkDevice() $device, GdkCursor() $cursor) {
+  method set_device_cursor (GdkDevice() $device, GdkCursor() $cursor)
+    is also<set-device-cursor>
+  {
     gdk_surface_set_device_cursor($!gdk-s, $device, $cursor);
   }
 
-  method set_input_region (cairo_region_t() $region) {
+  method set_input_region (cairo_region_t() $region)
+    is also<set-input-region>
+  {
     gdk_surface_set_input_region($!gdk-s, $region);
   }
 
-  method set_opaque_region (cairo_region_t() $region) {
+  method set_opaque_region (cairo_region_t() $region)
+    is also<set-opaque-region>
+  {
     gdk_surface_set_opaque_region($!gdk-s, $region);
   }
 
-  proto method translate_coordinates ()
+  proto method translate_coordinates (|)
+    is also<translate-coordinates>
   { *}
 
   multi method translate_coordinates (GdkSurface() $to) {
