@@ -5,17 +5,24 @@ use Method::Also;
 use NativeCall;
 
 use GDK::Raw::Types:ver<4>;
-use GDK::Raw::Paintable:ver<$>;
+use GDK::Raw::Paintable:ver<4>;
+
+use GDK::Snapshot:ver<4>;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
-class GDK::Snapshot { ... }
-
 role GDK::Roles::Paintable:ver<4> {
   has GdkPaintable $!gdk-p is implementor;
 
-  method GDA::Raw::Definitions::GdkPaintable
+  method roleInit-GdkPaintable {
+    return if $!gdk-p;
+
+    my \i = findProperImplementor(self.^attributes);
+    $!gdk-p = cast( GdkPaintable, i.get_value(self) );
+  }
+
+  method GDK::Raw::Definitions::GdkPaintable
   { $!gdk-p }
 
   method GdkPaintable
@@ -88,9 +95,15 @@ role GDK::Roles::Paintable:ver<4> {
   method get_intrinsic_height is also<get-intrinsic-height> {
     gdk_paintable_get_intrinsic_height($!gdk-p);
   }
+  method height {
+    self.get_intrinsic_height
+  }
 
   method get_intrinsic_width is also<get-intrinsic-width> {
     gdk_paintable_get_intrinsic_width($!gdk-p);
+  }
+  method width {
+    self.get_intrinsic_width;
   }
 
   method invalidate_contents is also<invalidate-contents> {
@@ -129,61 +142,13 @@ role GDK::Roles::Paintable:ver<4> {
     );
   }
 
-}
-
-our subset GdkSnapshotAncestry is export of Mu
-  where GdkSnapshot | GObject;
-
-class GDK::Snapshot {
-  also does GLib::Roles::Object;
-
-  has GdkSnapshot $!gdk-s is implementor;
-
-  submethod BUILD ( :$gdk-snapshot ) {
-    self.setGdkSnapshot($gdk-snapshot) if $gdk-snapshot
-  }
-
-  method setGdkSnapshot (GdkSnapshotAncestry $_) {
-    my $to-parent;
-
-    $!gdk-s = do {
-      when GdkSnapshot {
-        $to-parent = cast(GObject, $_);
-        $_;
-      }
-
-      default {
-        $to-parent = $_;
-        cast(GdkSnapshot, $_);
-      }
-    }
-    self!setObject($to-parent);
-  }
-
-  method GDK::Raw::Definitions::GdkSnapshot
-    is also<GdkSnapshot>
-  { $!gdk-s }
-
-  multi method new (GdkSnapshotAncestry $gdk-snapshot, :$ref = True) {
-    return unless $gdk-snapshot;
-
-    my $o = self.bless( :$gdk-snapshot );
-    $o.ref if $ref;
-    $o;
-  }
-  multi method new {
-    my $gdk-snapshot = ::?CLASS.new-obj-ptr(self.get_type);
-
-    $gdk-snapshot ?? self.bless( :$gdk-snapshot ) !! Nil;
-  }
-
-  method get_type is also<get-type> {
+  method gtkpaintable_get_type {
     state ($n, $t);
 
-    unstable_get_type( self.^name, &gdk_snapshot_get_type, $n, $t );
+    unstable_get_type( self.^name, &gdk_paintable_get_type, $n, $t );
   }
-}
 
+}
 
 our subset GdkPaintableAncestry is export of Mu
   where GdkPaintable | GObject;
@@ -219,6 +184,10 @@ class GDK::Paintable {
     my $o = self.bless( :$gdk-paintable );
     $o.ref if $ref;
     $o;
+  }
+
+  method get_type {
+    self.gtkpaintable_get_type;
   }
 
 }
