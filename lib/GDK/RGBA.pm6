@@ -10,7 +10,7 @@ use GLib::Roles::Implementor;
 
 class GDK::RGBA {
   also does GLib::Roles::Implementor;
-  
+
   has GdkRGBA $!gdk-rgba is implementor handles <red green blue alpha>;
 
   submethod BUILD ( :$!gdk-rgba ) { }
@@ -86,8 +86,18 @@ class GDK::RGBA {
     so gdk_rgba_is_opaque($!gdk-rgba);
   }
 
-  method parse (GdkRGBA() $rgba, Str() $spec) is static {
-    gdk_rgba_parse($spec);
+  multi method parse (GDK::RGBA:U: Str() $spec) {
+    samewith(GdkRGBA.new, $spec);
+  }
+  multi method parse (GDK::RGBA:U: GdkRGBA() $rgba, Str() $spec) {
+    gdk_rgba_parse($rgba, $spec);
+    $rgba;
+  }
+
+  method get_type is also<get-type> {
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gdk_rgba_get_type, $n, $t );
   }
 
   method to_string {
