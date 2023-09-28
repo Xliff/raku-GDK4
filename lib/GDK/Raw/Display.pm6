@@ -214,3 +214,32 @@ sub gdk_display_translate_key (
   is      native(gdk4)
   is      export
 { * }
+
+
+## /usr/src/gtk4/gdk/x11/gdkx11glcontext.h
+
+sub gdk_x11_display_get_egl_display (GdkDisplay $display)
+  returns Pointer
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_display_get_egl_version (
+  GdkDisplay $display,
+  gint       $major is rw,
+  gint       $minor is rw
+)
+  returns uint32
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_display_get_glx_version (
+  GdkDisplay $display,
+  gint       $major is rw,
+  gint       $minor is rw
+)
+  returns uint32
+  is      native(gdk4)
+  is      export
+{ * }

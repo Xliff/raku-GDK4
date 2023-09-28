@@ -405,4 +405,34 @@ class GDK::Display:ver<4> {
     $all.not ?? $rv !! ($rv, $keyval, $effective_group, $level, $consumed);
   }
 
+  method get_egl_display is also<get-egl-display> {
+    gdk_x11_display_get_egl_display($!gdk-d);
+  }
+
+  proto method get_egl_version (|)
+    is also<get-egl-version>
+  { * }
+
+  multi method get_egl_version {
+    samewith($, $);
+  }
+  multi method get_egl_version ($major is rw, $minor is rw) {
+    my gint ($j, $n) = 0 xx 2;
+    gdk_x11_display_get_egl_version($!gdk-d, $j, $n);
+    ($major, $minor) = ($j, $n);
+  }
+
+  proto method get_glx_version (|)
+    is also<get-glx-version>
+  { * }
+
+  multi method get_glx_version {
+    samewith($, $);
+  }
+  multi method get_glx_version ($major is rw, $minor is rw) {
+    my gint ($j, $n) = 0 xx 2;
+    gdk_x11_display_get_glx_version($!gdk-d, $j, $n);
+    ($major, $minor) = ($j, $n);
+  }
+
 }
