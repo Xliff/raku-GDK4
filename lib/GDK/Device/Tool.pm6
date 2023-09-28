@@ -74,34 +74,33 @@ class GDK::Device::Tool:ver<4> {
 
 }
 
-  ### /usr/src/gtk4-4.8.1+ds/gdk/gdkdevicetool.h
+### /usr/src/gtk4/gdk/gdkdevicetool.h
+sub gdk_device_tool_get_axes (GdkDeviceTool $tool)
+  returns GdkAxisFlags
+  is      native(gdk4)
+  is      export
+{ * }
 
-  sub gdk_device_tool_get_axes (GdkDeviceTool $tool)
-    returns GdkAxisFlags
-    is      native(gdk4)
-    is      export
-  { * }
+sub gdk_device_tool_get_hardware_id (GdkDeviceTool $tool)
+  returns guint64
+  is      native(gdk4)
+  is      export
+{ * }
 
-  sub gdk_device_tool_get_hardware_id (GdkDeviceTool $tool)
-    returns guint64
-    is      native(gdk4)
-    is      export
-  { * }
+sub gdk_device_tool_get_serial (GdkDeviceTool $tool)
+  returns guint64
+  is      native(gdk4)
+  is      export
+{ * }
 
-  sub gdk_device_tool_get_serial (GdkDeviceTool $tool)
-    returns guint64
-    is      native(gdk4)
-    is      export
-  { * }
+sub gdk_device_tool_get_tool_type (GdkDeviceTool $tool)
+  returns GdkDeviceToolType
+  is      native(gdk4)
+  is      export
+{ * }
 
-  sub gdk_device_tool_get_tool_type (GdkDeviceTool $tool)
-    returns GdkDeviceToolType
-    is      native(gdk4)
-    is      export
-  { * }
-
-  sub gdk_device_tool_get_type
-    returns GType
-    is      native(gdk4)
-    is      export
-  { * }
+sub gdk_device_tool_get_type
+  returns GType
+  is      native(gdk4)
+  is      export
+{ * }
