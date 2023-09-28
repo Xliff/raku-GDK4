@@ -12,6 +12,8 @@ use GDK::Drop:ver<4>;
 use GDK::Seat:ver<4>;
 use GDK::Surface:ver<4>;
 
+class GDK::Event::Sequence:ver<4> { ... }
+
 class GDK::Event:ver<4> {
   has GdkEvent $!gdk-e is implementor;
 
@@ -174,14 +176,18 @@ class GDK::Event:ver<4> {
     );
   }
 
-  method get_event_sequence
+  method get_event_sequence ( :$raw = False )
     is also<
       get-event-sequence
       event_sequence
       event-sequence
     >
   {
-    gdk_event_get_event_sequence(self.GdkEvent);
+    propReturnObject(
+      gdk_event_get_event_sequence(self.GdkEvent),
+      $raw,
+      |GDK::Event::Sequence.getTypePair
+    );
   }
 
   proto method get_event_type (|)
@@ -986,6 +992,8 @@ class GDK::Events {
 
 
 class GDK::Event::Sequence:ver<4> {
+  also does GLib::Roles::Implementor;
+
   has GdkEventSequence $!gdk-es;
 
   method new (GdkEventSequence $e) {
