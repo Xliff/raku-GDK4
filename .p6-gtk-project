@@ -4,5 +4,5 @@ backups=backup,bitbucket,google-backup,azure-backupm,hut
 excluded_namespaces=GDK::Pixbuf
 build_exclude=
 lib=gdk4
-include_directory=/usr/src/gtk4-4.8.1+ds/gdk
+include_directory=/usr/src/gtk4/gdk
 exec=p6gtk4exec
