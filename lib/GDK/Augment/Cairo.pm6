@@ -52,7 +52,7 @@ augment class Cairo::Context {
     gdk_cairo_set_source_pixbuf(self.context, $pixbuf, $px, $py);
   }
 
-  method cairo_set_source_rgba (GdkRGBA() $rgba) {
+  multi method rgba (GdkRGBA() $rgba) {
     gdk_cairo_set_source_rgba(self.context, $rgba);
   }
 }
