@@ -59,3 +59,9 @@ sub gdk_rgba_to_string (GdkRGBA $rgba)
   is      native(gdk4)
   is      export
 { * }
+
+sub gdk_rgba_get_type ()
+  returns GType
+  is      native(gdk4)
+  is      export
+{ * }
