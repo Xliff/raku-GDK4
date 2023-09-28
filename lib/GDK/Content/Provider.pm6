@@ -55,6 +55,43 @@ class GDK::Content::Provider {
     $o;
   }
 
+  proto method new_typed (|)
+  { * }
+
+  method new_typed (
+           $value,
+          :$type    is copy,
+          :$signed,
+          :$double,
+          :$direct
+  )
+    is also<new-typed>
+  {
+    my gint $t = $type;
+
+    unless $t {
+      $t = do if $value ~~ GLib::Object {
+        $value.get_type
+      } elsif $value ~~ GObject {
+        G_TYPE_OBJECT
+      } else {
+        GLib::Value.gtypeFromType($value.WHAT) || G_TYPE_POINTER;
+      }
+    }
+
+    samewith( $t, toPointer($v, :$signed, :$double, $direct) );
+  }
+
+  method new_typed (Int() $type, gpointer $value);
+    my $gdk-content-provider = gdk_content_provider_new_typed(
+      $t,
+      $value
+      Str
+    );
+
+    $gdk-content-provider ?? self.bless( :$gdk-content-provider ) !! Nil;
+  }
+
   # Type: GDKContentFormats
   method formats ( :$raw = False ) is rw  is g-property {
     my $gv = GLib::Value.new( ::('GDK::Content::Formats').get_type );
