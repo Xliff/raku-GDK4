@@ -58,7 +58,7 @@ class GDK::Cursor:ver<4> {
   )
     is also<new-from-name>
   {
-    my $gdk-cursor = gdk_cursor_new_from_name($!gdk-c, $name, $fallback);
+    my $gdk-cursor = gdk_cursor_new_from_name($name, $fallback);
 
     $gdk-cursor ?? self.bless( :$gdk-cursor ) !! Nil;
   }
