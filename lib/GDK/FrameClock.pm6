@@ -49,6 +49,34 @@ class GDK::FrameClock:ver<4> {
     $o;
   }
 
+  method After-Paint is also<After_Paint> {
+    self.connect($!gdk-fc, 'after-paint');
+  }
+
+  method Before-Paint is also<Before_Events> {
+    self.connect($!gdk-fc, 'before-paint');
+  }
+
+  method Flush-Events is also<Flush_Events> {
+    self.connect($!gdk-fc, 'flush-events');
+  }
+
+  method Layout {
+    self.connect($!gdk-fc, 'layout');
+  }
+
+  method Paint {
+    self.connect($!gdk-fc, 'paint');
+  }
+
+  method Resume-Events is also<Resume_Events> {
+    self.connect($!gdk-fc, 'resume-events');
+  }
+
+  method Update {
+    self.connect($!gdk-fc, 'update');
+  }
+
   method begin_updating is also<begin-updating> {
     gdk_frame_clock_begin_updating($!gdk-fc);
   }
