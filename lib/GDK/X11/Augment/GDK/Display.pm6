@@ -10,7 +10,7 @@ use GDK::Display:ver<4>;
 
 use MONKEY-TYPING;
 
-augment class GDK::Display {
+role GDK::Augment::Display {
 
   proto method string_to_compound_text (|)
   { * }
