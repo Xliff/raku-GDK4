@@ -82,6 +82,13 @@ sub gdk_paintable_snapshot (
   is      export
 { * }
 
+sub gdk_paintable_get_type
+  returns GType
+  is      native(gdk4)
+  is      export
+{ * }
+
+
 ### /usr/src/gtk4-4.8.1+ds/gdk/gdksnapshot.h
 
 sub gdk_snapshot_get_type
