@@ -12,12 +12,14 @@ use GLib::Bytes;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+use GDK::Roles::Paintable;
 
 our subset GdkTextureAncestry is export of Mu
-  where GdkTexture | GObject;
+  where GdkTexture | GdkPaintable | GObject;
 
 class GDK::Texture:ver<4> {
   also does GLib::Roles::Object;
+  also does GDK::Roles::Paintable;
 
   has GdkTexture $!gdk-t is implementor;
 
@@ -34,12 +36,19 @@ class GDK::Texture:ver<4> {
         $_;
       }
 
+      when GdkPaintable {
+        $!gdk-p = $_;
+        $to-parent = cast(GObject, $_);
+        cast(GdkTexture, $_);
+      }
+
       default {
         $to-parent = $_;
         cast(GdkTexture, $_);
       }
     }
     self!setObject($to-parent);
+    self.roleInit-GdkPaintable;
   }
 
   method GDK::Raw::Definitions::GdkTexture
