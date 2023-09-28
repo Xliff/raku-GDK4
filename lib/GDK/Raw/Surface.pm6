@@ -11,7 +11,7 @@ use GDK::Raw::Enums:ver<4>;
 
 unit package GDK::Raw::Surface:ver<4>;
 
-### /usr/src/gtk4-4.8.1+ds/gdk/gdksurface.h
+### /usr/src/gdk4-4.8.1+ds/gdk/gdksurface.h
 
 sub gdk_surface_beep (GdkSurface $surface)
   is      native(gdk4)
@@ -203,6 +203,116 @@ sub gdk_surface_translate_coordinates (
   gdouble    $y     is rw
 )
   returns uint32
+  is      native(gdk4)
+  is      export
+{ * }
+
+### /usr/src/gdk4/gdk/x11/gdkx11surface.h
+
+sub gdk_x11_get_server_time (GdkSurface $surface)
+  returns guint32
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_get_desktop (GdkSurface $surface)
+  returns guint32
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_get_group (GdkSurface $surface)
+  returns GdkSurface
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_get_type
+  returns GType
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_get_xid (GdkSurface $surface)
+  returns Window
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_move_to_current_desktop (GdkSurface $surface)
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_move_to_desktop (
+  GdkSurface $surface,
+  guint32    $desktop
+)
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_set_frame_sync_enabled (
+  GdkSurface $surface,
+  gboolean   $frame_sync_enabled
+)
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_set_group (
+  GdkSurface $surface,
+  GdkSurface $leader
+)
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_set_skip_pager_hint (
+  GdkSurface $surface,
+  gboolean   $skips_pager
+)
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_set_skip_taskbar_hint (
+  GdkSurface $surface,
+  gboolean   $skips_taskbar
+)
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_set_theme_variant (
+  GdkSurface $surface,
+  Str        $variant
+)
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_set_urgency_hint (
+  GdkSurface $surface,
+  gboolean   $urgent
+)
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_set_user_time (
+  GdkSurface $surface,
+  guint32    $timestamp
+)
+  is      native(gdk4)
+  is      export
+{ * }
+
+sub gdk_x11_surface_set_utf8_property (
+  GdkSurface $surface,
+  Str        $name,
+  Str        $value
+)
   is      native(gdk4)
   is      export
 { * }

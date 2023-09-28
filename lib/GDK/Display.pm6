@@ -435,4 +435,12 @@ class GDK::Display:ver<4> {
     ($major, $minor) = ($j, $n);
   }
 
+  method lookup_for_display (Window $window, :$raw = False) {
+    propReturnObject(
+      gdk_x11_surface_lookup_for_display($!gdk-d, $window),
+      $raw,
+      |GDK::Surface.getTypePair
+    );
+  }
+
 }

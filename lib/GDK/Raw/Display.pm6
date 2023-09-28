@@ -243,3 +243,14 @@ sub gdk_x11_display_get_glx_version (
   is      native(gdk4)
   is      export
 { * }
+
+## /usr/src/gtk4/gdk/x11/gdkx11surface.h
+
+sub gdk_x11_surface_lookup_for_display (
+  GdkDisplay $display,
+  Window     $window
+)
+  returns GdkSurface
+  is      native(gdk4)
+  is      export
+{ * }
