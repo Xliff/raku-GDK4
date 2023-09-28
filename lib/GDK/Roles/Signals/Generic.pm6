@@ -115,6 +115,33 @@ role GDK::Roles::Signals::Generic:ver<4> {
     %!signals-gdk{$signal}[0];
   }
 
+  # GObject, GdkEvent, gpointer --> bool
+  method connect-event (
+    $obj,
+    $signal,
+    &handler?
+  ) {
+    my $hid;
+    %!signals-gdk{$signal} //= do {
+      my \ʂ = Supplier.new;
+      $hid = g-connect-event($obj, $signal,
+        -> $, $e, $ud {
+          CATCH {
+            default { ʂ.quit($_) }
+          }
+
+          my $r = ReturnedValue.new;
+          ʂ.emit( [self, $e, $ud, $r] );
+          $r.r
+        },
+        Pointer, 0
+      );
+      [ self.create-signal-supply($signal, ʂ), $obj, $hid];
+    };
+    %!signals-gdk{$signal}[0].tap(&handler) with &handler;
+    %!signals-gdk{$signal}[0];
+  }
+
   # GdkDevice, GdkDeviceTool, gpointer --> void
   method connect-device-tool (
     $obj,
@@ -149,8 +176,8 @@ sub g-connect-display (
   uint32  $flags
 )
   returns uint64
-  is native('gobject-2.0')
-  is symbol('g_signal_connect_object')
+  is      native('gobject-2.0')
+  is      symbol('g_signal_connect_object')
 { * }
 
 sub g-connect-monitor (
@@ -161,8 +188,8 @@ sub g-connect-monitor (
   uint32  $flags
 )
   returns uint64
-  is native('gobject-2.0')
-  is symbol('g_signal_connect_object')
+  is      native('gobject-2.0')
+  is      symbol('g_signal_connect_object')
 { * }
 
 sub g-connect-display-rbool (
@@ -173,8 +200,8 @@ sub g-connect-display-rbool (
   uint32  $flags
 )
   returns uint64
-  is native('gobject-2.0')
-  is symbol('g_signal_connect_object')
+  is      native('gobject-2.0')
+  is      symbol('g_signal_connect_object')
 { * }
 
 sub g-connect-device (
@@ -185,10 +212,21 @@ sub g-connect-device (
   uint32  $flags
 )
   returns uint64
-  is native('gobject-2.0')
-  is symbol('g_signal_connect_object')
+  is      native('gobject-2.0')
+  is      symbol('g_signal_connect_object')
 { * }
 
+sub g-connect-event (
+  Pointer $app,
+  Str     $name,
+          &handler (GObject, GdkEvent, Pointer --> gboolean),
+  Pointer $data,
+  uint32  $flags
+)
+  returns uint64
+  is      native('gobject-2.0')
+  is      symbol('g_signal_connect_object')
+{ * }
 
 # GdkDevice, GdkDeviceTool, gpointer --> void
 sub g-connect-device-tool(
@@ -199,6 +237,6 @@ sub g-connect-device-tool(
   uint32  $flags
 )
   returns uint64
-  is native('gobject-2.0')
-  is symbol('g_signal_connect_object')
+  is      native('gobject-2.0')
+  is      symbol('g_signal_connect_object')
 { * }
