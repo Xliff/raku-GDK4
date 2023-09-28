@@ -19,6 +19,7 @@ constant Screen          is export := gpointer;
 constant Window          is export := gpointer;
 constant XID             is export := gulong;
 
+class GdkAtom                  is repr<CPointer> is export does GLib::Roles::Pointers { }
 class GdkAppLaunchContext      is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkCairoContext          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkClipboard             is repr<CPointer> does GLib::Roles::Pointers is export { }
@@ -43,7 +44,13 @@ class GdkToplevel              is repr<CPointer> does GLib::Roles::Pointers is e
 class GdkToplevelSize          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkVulkanContext         is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkX11Display            is repr<CPointer> does GLib::Roles::Pointers is export { }
+class GdkX11GLContext          is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkX11Screen             is repr<CPointer> does GLib::Roles::Pointers is export { }
+
+
+class GdkWin32Screen           is repr<CPointer> does GLib::Roles::Pointers is export { }
+
+constant GdkScreen is export = $*DISTRO.is-win ?? GdkWin32Screen !! GdkX11Screen;
 
 class GdkContentFormats        is repr<CPointer> does GLib::Roles::Pointers is export { }
 class GdkContentFormatsBuilder is repr<CPointer> does GLib::Roles::Pointers is export { }
