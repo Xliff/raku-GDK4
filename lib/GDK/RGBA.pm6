@@ -86,8 +86,19 @@ class GDK::RGBA {
     so gdk_rgba_is_opaque($!gdk-rgba);
   }
 
-  multi method parse (GDK::RGBA:U: Str() $spec) {
-    samewith(GdkRGBA.new, $spec);
+  proto method new (|)
+  { * }
+
+  multi method parse (GDK::RGBA:U: *@parse-list) {
+    my @colors = do for @parse-list -> $_ is copy {
+      unless $_ ~~ Str {
+        next unless .^can('Str');
+        $_ .= Str;
+      }
+      GDK::RGBA.parse(GdkRGBA.new, $_);
+    }
+    return Nil unless +@colors;
+    +@colors > 1 ?? @colors !! @colors.head;
   }
   multi method parse (GDK::RGBA:U: GdkRGBA() $rgba, Str() $spec) {
     gdk_rgba_parse($rgba, $spec);
