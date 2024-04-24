@@ -38,6 +38,10 @@ class GdkRectangle is repr<CStruct> does GLib::Roles::Pointers is export {
 	has gint $.width  is rw is built;
 	has gint $.height is rw is built;
 
+	method size {
+		($.width, $.height);
+	}
+
 	method new ($x, $y, $width, $height) {
 		self.bless( :$x, :$y, :$width, :$height );
   }
