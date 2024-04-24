@@ -163,7 +163,12 @@ class GDK::Display:ver<4> {
     );
   }
 
-  method get_clipboard ( :$raw = False ) is also<get-clipboard> {
+  method get_clipboard ( :$raw = False )
+    is also<
+      get-clipboard
+      clipboard
+    >
+  {
     propReturnObject(
       gdk_display_get_clipboard($!gdk-d),
       $raw,
@@ -171,7 +176,12 @@ class GDK::Display:ver<4> {
     );
   }
 
-  method get_default ( :$raw = False ) is also<get-default> {
+  method get_default ( :$raw = False )
+    is also<
+      get-default
+      default
+    >
+  {
     propReturnObject(
       gdk_display_get_default(),
       $raw,
@@ -179,7 +189,11 @@ class GDK::Display:ver<4> {
     );
   }
 
-  method get_default_seat ( :$raw = False ) is also<get-default-seat> {
+  method get_default_seat ( :$raw = False ) is also<
+    get-default-seat
+    default-seat
+    default_seat
+  > {
     propReturnObject(
       gdk_display_get_default_seat($!gdk-d),
       $raw,
@@ -202,7 +216,10 @@ class GDK::Display:ver<4> {
   }
 
   method get_monitors ( :$raw = False, :$model = False )
-    is also<get-monitors>
+    is also<
+      get-monitors
+      monitors
+    >
   {
     my $ml = propReturnObject(
       gdk_display_get_monitors($!gdk-d),
@@ -213,12 +230,21 @@ class GDK::Display:ver<4> {
     $ml.to_array( $raw, |GDK::Monitor.getTypePair )
   }
 
-  method get_name is also<get-name> {
+  method get_name
+    is also<
+      get-name
+      name
+    >
+  {
     gdk_display_get_name($!gdk-d);
   }
 
   method get_primary_clipboard ( :$raw = False )
-    is also<get-primary-clipboard>
+    is also<
+      get-primary-clipboard
+      primary-clipboard
+      
+    >
   {
     propReturnObject(
       gdk_display_get_primary_clipboard($!gdk-d),
