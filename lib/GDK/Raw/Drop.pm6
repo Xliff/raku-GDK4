@@ -5,6 +5,7 @@ use NativeCall;
 use GLib::Raw::Definitions;
 use GLib::Raw::Structs;
 use GIO::Raw::Definitions;
+use GIO::Raw::Structs;
 use GDK::Raw::Definitions:ver<4>;
 use GDK::Raw::Enums:ver<4>;
 
